@@ -1,0 +1,71 @@
+# Local development stack. Every service here is the real thing -- there are no
+# stubs or in-memory substitutes, because the storage boundary this platform
+# depends on (see ARCHITECTURE.md section 1) is only meaningful when both
+# engines behave as they actually do in production.
+#
+# Ports are offset from the defaults so this stack can run alongside an existing
+# local Postgres/Redis without a collision. 55432/56379 are deliberately skipped:
+# the FinGuru stack on this machine already binds them.
+
+name: agentlens
+
+services:
+  postgres:
+    image: postgres:17.2-alpine
+    environment:
+      POSTGRES_USER: agentlens
+      POSTGRES_PASSWORD: agentlens
+      POSTGRES_DB: agentlens
+      # Deterministic collation. Without this the sort order of text indexes
+      # depends on the host's libc, which makes migrations non-reproducible
+      # across machines.
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+    ports:
+      - "55433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentlens -d agentlens"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.3-alpine
+    environment:
+      CLICKHOUSE_USER: agentlens
+      CLICKHOUSE_PASSWORD: agentlens
+      CLICKHOUSE_DB: agentlens
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "58123:8123"   # HTTP
+      - "59000:9000"   # native
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8123/ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7.4-alpine
+    # Persistence off: Redis holds evaluator cache, rate-limit counters and
+    # idempotency keys. All three are reconstructible, and none of them is a
+    # system of record -- so durability here would buy nothing and cost latency.
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "56380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  postgres_data:
+  clickhouse_data:

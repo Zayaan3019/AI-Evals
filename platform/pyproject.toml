@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentlens-platform"
+version = "0.1.0"
+description = "Ingestion, storage and evaluation services for agentlens"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    # Async Postgres. asyncpg is the driver; SQLAlchemy 2.0 is the mapper.
+    "sqlalchemy[asyncio]>=2.0.36",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    # ClickHouse. The official driver speaks both HTTP and native; we use HTTP
+    # because it is the interface ClickHouse Cloud exposes and it keeps the
+    # deployment story identical locally and hosted.
+    "clickhouse-connect>=0.8.5",
+    "redis>=5.2",
+    # OTLP ingestion. We consume the generated protobuf stubs rather than
+    # hand-rolling the wire format -- the spec is the collector's, not ours.
+    "opentelemetry-proto>=1.30",
+    "grpcio>=1.68",
+    "protobuf>=5.28",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.28",
+    # Drives the SDK against the real ingestion service in end-to-end tests.
+    "opentelemetry-exporter-otlp-proto-grpc>=1.30",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]

@@ -1,0 +1,126 @@
+{
+  "environment": {
+    "python": "3.12.7",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "cpu_count": 22,
+    "measured_at": "2026-08-03T12:50:55+00:00"
+  },
+  "results": [
+    {
+      "name": "sdk.overhead_p99",
+      "unit": "ms/call",
+      "value": 0.9307,
+      "detail": {
+        "p50": "0.2855",
+        "p95": "0.5662",
+        "iterations": 2000,
+        "runs": 3,
+        "all_p99": [
+          0.9307,
+          2.4341,
+          2.8711
+        ]
+      }
+    },
+    {
+      "name": "ingest.throughput",
+      "unit": "spans/sec",
+      "value": 28206.744378511863,
+      "detail": {
+        "spans": 50000,
+        "seconds": "1.77",
+        "batches": 10,
+        "dropped": 0,
+        "failed": 0
+      }
+    },
+    {
+      "name": "query.fetch_trace_by_id",
+      "unit": "ms",
+      "value": 61.28069997066632,
+      "detail": {
+        "p95": "70.77",
+        "p99": "73.58",
+        "n": 30,
+        "note": "point lookup, no time filter (bloom-filter skip index)"
+      }
+    },
+    {
+      "name": "query.list_traces_24h",
+      "unit": "ms",
+      "value": 81.28169999690726,
+      "detail": {
+        "p95": "123.53",
+        "p99": "141.62",
+        "n": 30,
+        "note": "per-trace rollup over a 24h window"
+      }
+    },
+    {
+      "name": "query.model_summary_24h",
+      "unit": "ms",
+      "value": 72.77480000630021,
+      "detail": {
+        "p95": "100.99",
+        "p99": "102.11",
+        "n": 30,
+        "note": "cost/token/latency aggregate with t-digest quantiles"
+      }
+    },
+    {
+      "name": "evaluator.exact_match",
+      "unit": "\u00b5s/item",
+      "value": 2.729600004386157,
+      "detail": {
+        "items": 2000,
+        "per_sec": "366,354"
+      }
+    },
+    {
+      "name": "evaluator.token_f1",
+      "unit": "\u00b5s/item",
+      "value": 21.67064999230206,
+      "detail": {
+        "items": 2000,
+        "per_sec": "46,145"
+      }
+    },
+    {
+      "name": "evaluator.context_groundedness",
+      "unit": "\u00b5s/item",
+      "value": 17.909000016516075,
+      "detail": {
+        "items": 2000,
+        "per_sec": "55,838"
+      }
+    },
+    {
+      "name": "evaluator.no_pii_leak",
+      "unit": "\u00b5s/item",
+      "value": 47.53619999974035,
+      "detail": {
+        "items": 2000,
+        "per_sec": "21,037"
+      }
+    },
+    {
+      "name": "evaluator.response_entropy",
+      "unit": "\u00b5s/item",
+      "value": 16.899349982850254,
+      "detail": {
+        "items": 2000,
+        "per_sec": "59,174"
+      }
+    },
+    {
+      "name": "stats.paired_bootstrap",
+      "unit": "ms",
+      "value": 1120.5919000203721,
+      "detail": {
+        "pairs": 200,
+        "resamples": 10000
+      }
+    }
+  ]
+}

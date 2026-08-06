@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentlens-sdk"
+version = "0.1.0"
+description = "Non-blocking OpenTelemetry tracing SDK for LLM agent systems"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+
+dependencies = [
+    "opentelemetry-api>=1.30",
+    "opentelemetry-sdk>=1.30",
+    # 0.65b0 is the floor that actually has every GenAI attribute this SDK
+    # emits. 0.60b1 satisfies a looser constraint but lacks
+    # GEN_AI_RETRIEVAL_DOCUMENTS and GEN_AI_REQUEST_STREAM, so a looser floor
+    # produces an ImportError at first use rather than at install time.
+    "opentelemetry-semantic-conventions>=0.65b0",
+]
+
+[project.optional-dependencies]
+otlp = ["opentelemetry-exporter-otlp-proto-grpc>=1.30"]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+agentlens = ["py.typed", "data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = ["error::DeprecationWarning:agentlens.*"]

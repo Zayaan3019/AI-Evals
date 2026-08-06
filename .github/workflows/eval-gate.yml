@@ -1,0 +1,131 @@
+# Regression gate for pull requests.
+#
+# Runs the eval dataset against the PR's system, compares it to the baseline
+# from the default branch, and blocks the merge if quality regressed by more
+# than this dataset's noise would produce anyway.
+#
+# The gate's exit codes are distinct per verdict so this workflow can report
+# "we could not tell" differently from "it got worse". Both block, because a
+# refusal treated as a pass is how a broken gate ships a regression -- but they
+# call for different fixes: one is a code problem, the other an eval-set problem.
+
+name: eval-gate
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: eval-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:17.2-alpine
+        env:
+          POSTGRES_USER: agentlens
+          POSTGRES_PASSWORD: agentlens
+          POSTGRES_DB: agentlens
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U agentlens -d agentlens"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+
+      clickhouse:
+        image: clickhouse/clickhouse-server:25.3-alpine
+        env:
+          CLICKHOUSE_USER: agentlens
+          CLICKHOUSE_PASSWORD: agentlens
+          CLICKHOUSE_DB: agentlens
+        ports: ["8123:8123"]
+        options: >-
+          --health-cmd "wget --spider -q http://127.0.0.1:8123/ping"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+
+    env:
+      AGENTLENS_POSTGRES_DSN: postgresql+asyncpg://agentlens:agentlens@localhost:5432/agentlens
+      AGENTLENS_CLICKHOUSE_HOST: localhost
+      AGENTLENS_CLICKHOUSE_PORT: "8123"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ./sdk[otlp,dev] -e ./platform[dev]
+
+      - name: Migrate
+        working-directory: platform
+        run: python -m alembic upgrade head
+
+      # The suite is the first gate. A platform whose own tests fail cannot be
+      # trusted to judge anything else.
+      - name: Test
+        run: |
+          cd sdk && python -m pytest tests/ -q && cd ..
+          cd platform && python -m pytest tests/ -q
+
+      - name: Provision tenant
+        id: tenant
+        working-directory: platform
+        run: |
+          KEY=$(python -m agentlens_platform.cli create-tenant ci --name "CI")
+          echo "::add-mask::$KEY"
+          echo "api_key=$KEY" >> "$GITHUB_OUTPUT"
+
+      # Replace this step with a real invocation of your agent. It must produce
+      # two runs over the same dataset: one labelled for the base commit and one
+      # for the PR head. The gate refuses to compare across datasets or across
+      # evaluator configurations, so both runs must use the same of each.
+      - name: Run evals
+        working-directory: platform
+        env:
+          AGENTLENS_API_KEY: ${{ steps.tenant.outputs.api_key }}
+          BASE_LABEL: main@${{ github.event.pull_request.base.sha }}
+          HEAD_LABEL: pr-${{ github.event.pull_request.number }}@${{ github.sha }}
+        run: python -m agentlens_platform.examples.ci_eval_run
+
+      - name: Regression gate
+        working-directory: platform
+        run: |
+          set +e
+          python -m agentlens_platform.ci \
+            --tenant ci \
+            --baseline "main@${{ github.event.pull_request.base.sha }}" \
+            --candidate "pr-${{ github.event.pull_request.number }}@${{ github.sha }}" \
+            --evaluator exact_match@1 \
+            --min-pairs 20 \
+            --max-drop 0.02 \
+            | tee gate-report.txt
+          code=${PIPESTATUS[0]}
+          echo "gate exit code: $code"
+          case $code in
+            0) echo "::notice::eval gate passed" ;;
+            1) echo "::error::eval gate: statistically significant regression" ;;
+            2) echo "::error::eval gate: runs are not comparable (dataset or evaluator config changed)" ;;
+            3) echo "::error::eval gate: not enough paired cases to decide" ;;
+            4) echo "::error::eval gate: too many evaluator failures to trust the result" ;;
+          esac
+          exit $code
+
+      - name: Publish report
+        if: always()
+        run: |
+          {
+            echo '## Eval regression gate'
+            echo '```'
+            cat platform/gate-report.txt 2>/dev/null || echo 'no report produced'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
