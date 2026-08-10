@@ -1,0 +1,51 @@
+# Deploy-time overlay for the single EC2 demo host. Layers on top of the
+# existing docker-compose.yml (which stays exactly as-is for local dev, where
+# the app runs directly on the host via `python -m agentlens_platform.cli
+# serve`, not in a container):
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Adds the app container itself, using `network_mode: host` so it can reach
+# postgres/clickhouse/redis at the same localhost:<port> addresses the
+# platform's config.py already defaults to (55433/58123/56380 -- the exact
+# host-mapped ports docker-compose.yml already publishes) with zero env var
+# overrides for connectivity. Host networking is a one-box simplification,
+# not a pattern to carry into a real multi-host deployment -- documented here
+# rather than silently relied on.
+#
+# Secrets (DB passwords, the app's Postgres role password) are NOT the
+# docker-compose.yml defaults in this file -- they come from a `.env.prod`
+# populated from SSM Parameter Store by the EC2 user-data script (see
+# infra/projects/ai-evals/main.tf) and are never committed here.
+
+name: agentlens
+
+services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: ${AGENTLENS_POSTGRES_PASSWORD}
+
+  clickhouse:
+    environment:
+      CLICKHOUSE_PASSWORD: ${AGENTLENS_CLICKHOUSE_PASSWORD}
+
+  app:
+    image: ${AGENTLENS_IMAGE}
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      AGENTLENS_POSTGRES_DSN: postgresql+asyncpg://agentlens:${AGENTLENS_POSTGRES_PASSWORD}@localhost:55433/agentlens
+      AGENTLENS_POSTGRES_APP_DSN: postgresql+asyncpg://agentlens_app:${AGENTLENS_APP_ROLE_PASSWORD}@localhost:55433/agentlens
+      AGENTLENS_CLICKHOUSE_HOST: localhost
+      AGENTLENS_CLICKHOUSE_PORT: "58123"
+      AGENTLENS_CLICKHOUSE_PASSWORD: ${AGENTLENS_CLICKHOUSE_PASSWORD}
+      AGENTLENS_REDIS_URL: redis://localhost:56380/0
+      AGENTLENS_API_HOST: 0.0.0.0
+      AGENTLENS_API_PORT: "8100"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

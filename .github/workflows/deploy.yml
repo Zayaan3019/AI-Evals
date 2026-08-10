@@ -1,0 +1,155 @@
+name: Deploy
+
+# Runs after infra/projects/ai-evals has been applied (see that directory's
+# README for the two-step bootstrap) and these repo Variables exist:
+#   AWS_DEPLOY_ROLE_ARN, ECR_REPOSITORY_URL, FRONTEND_BUCKET,
+#   CLOUDFRONT_DISTRIBUTION_ID, CLOUDFRONT_URL
+#
+# No AWS access keys stored anywhere -- OIDC role assumption only. No demo
+# API key stored in GitHub either -- CloudFront injects it at the edge (see
+# main.tf's demo_tenant_api_key-driven origin custom header), so this
+# workflow never needs to know its value. Existing eval-gate.yml (the
+# PR-time regression gate) is untouched by this file.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.tag.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - id: tag
+        run: echo "value=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push platform image
+        env:
+          ECR_REPOSITORY_URL: ${{ vars.ECR_REPOSITORY_URL }}
+        run: |
+          docker build -f platform/Dockerfile -t "$ECR_REPOSITORY_URL:${{ github.sha }}" -t "$ECR_REPOSITORY_URL:latest" .
+          docker push "$ECR_REPOSITORY_URL:${{ github.sha }}"
+          docker push "$ECR_REPOSITORY_URL:latest"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Sync frontend to S3
+        run: aws s3 sync frontend/dist "s3://${{ vars.FRONTEND_BUCKET }}" --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"
+
+  deploy-backend:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Deploy via SSM Run Command
+        env:
+          ECR_REPOSITORY_URL: ${{ vars.ECR_REPOSITORY_URL }}
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          set -euo pipefail
+
+          # Targets the instance by tag (Project=ai-evals-host, set in
+          # infra/modules/ec2-docker-host), not a hardcoded instance ID --
+          # survives `terraform apply` recreating the box.
+          COMMAND_ID=$(aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=tag:Project,Values=ai-evals-host" \
+            --comment "AI-Evals deploy ${GITHUB_SHA}" \
+            --parameters "commands=[
+              'set -euo pipefail',
+              'cd /opt/agentlens',
+              'git fetch --depth 1 origin main',
+              'git reset --hard origin/main',
+              'export AGENTLENS_IMAGE=${ECR_REPOSITORY_URL}:${IMAGE_TAG}',
+              'export AGENTLENS_POSTGRES_PASSWORD=$(aws ssm get-parameter --name /agentlens/prod/postgres_password --with-decryption --query Parameter.Value --output text --region us-east-1)',
+              'export AGENTLENS_CLICKHOUSE_PASSWORD=$(aws ssm get-parameter --name /agentlens/prod/clickhouse_password --with-decryption --query Parameter.Value --output text --region us-east-1)',
+              'export AGENTLENS_APP_ROLE_PASSWORD=$(aws ssm get-parameter --name /agentlens/prod/app_role_password --with-decryption --query Parameter.Value --output text --region us-east-1)',
+              'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_REPOSITORY_URL}',
+              'docker compose -f docker-compose.yml -f docker-compose.prod.yml pull',
+              'docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d',
+              'sleep 15',
+              'docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T app python -m alembic upgrade head',
+              'docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T postgres psql -U agentlens -d agentlens -c \"ALTER ROLE agentlens_app PASSWORD ${AGENTLENS_APP_ROLE_PASSWORD}\"',
+              'docker compose -f docker-compose.yml -f docker-compose.prod.yml restart app'
+            ]" \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM command: $COMMAND_ID"
+
+          for i in $(seq 1 30); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$(aws ec2 describe-instances --filters Name=tag:Project,Values=ai-evals-host Name=instance-state-name,Values=running --query 'Reservations[0].Instances[0].InstanceId' --output text)" \
+              --query "Status" --output text 2>/dev/null || echo "Pending")
+            echo "status: $STATUS"
+            case "$STATUS" in
+              Success) exit 0 ;;
+              Failed|Cancelled|TimedOut) echo "SSM command did not succeed"; exit 1 ;;
+              *) sleep 10 ;;
+            esac
+          done
+          echo "Timed out waiting for SSM command"
+          exit 1
+
+  smoke-test:
+    needs: [build-and-push, deploy-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check (no auth required)
+        run: |
+          set -euo pipefail
+          health=$(curl -sf "${{ vars.CLOUDFRONT_URL }}/api/health" --max-time 30 --retry 6 --retry-delay 10 --retry-connrefused)
+          echo "$health"
+          echo "$health" | grep -q '"status":"ok"' || { echo "Backend not healthy"; exit 1; }
+
+      - name: Verify the demo tenant is reachable with NO client-side key
+        # Deliberately sends no x-agentlens-api-key header -- CloudFront's
+        # origin custom header (set from demo_tenant_api_key in
+        # infra/projects/ai-evals/main.tf) must inject it, exactly as a real
+        # browser request would rely on. This also doubles as a check that
+        # the post-bootstrap `terraform apply -var="demo_tenant_api_key=..."`
+        # step (see that directory's README) actually happened -- a 401 here
+        # means it didn't, not that this test is broken.
+        run: |
+          set -euo pipefail
+          stats=$(curl -sf "${{ vars.CLOUDFRONT_URL }}/api/v1/stats" --max-time 30)
+          echo "$stats"
+          echo "$stats" | grep -q '"tenant"' || { echo "Demo tenant stats endpoint did not respond as expected"; exit 1; }
