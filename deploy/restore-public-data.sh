@@ -43,14 +43,28 @@ docker pull -q "$IMAGE"
 echo "== 3. data stores on the low-memory overlay"
 # The old overlay ran a traffic generator; it and its data go away here.
 docker rm -f agentlens-demo-traffic-1 >/dev/null 2>&1 || true
+if [ "${RESET_CLICKHOUSE:-0}" = 1 ]; then
+  # Start ClickHouse from an empty volume. Needed once on the original host:
+  # its volume held ~2 GB of system-log parts (system logs are disabled in
+  # deploy/clickhouse-low-memory.xml) that ClickHouse could not load within
+  # the 450 MB cap, so it restart-looped. Every span this instance serves is
+  # restored from the bundle in step 7.
+  echo "resetting the ClickHouse volume"
+  $DC rm -sf clickhouse >/dev/null 2>&1 || true
+  docker volume rm agentlens_clickhouse_data >/dev/null
+fi
 $DC up -d --remove-orphans postgres redis clickhouse
-for i in $(seq 1 40); do
+pg=; ch=
+for i in $(seq 1 60); do
   pg=$(docker inspect -f '{{.State.Health.Status}}' agentlens-postgres-1 2>/dev/null || true)
   ch=$(curl -s -m 3 -o /dev/null -w '%{http_code}' http://localhost:58123/ping || true)
   [ "$pg" = healthy ] && [ "$ch" = 200 ] && break
   sleep 3
 done
 echo "postgres=$pg clickhouse=$ch"
+if [ "$pg" != healthy ] || [ "$ch" != 200 ]; then
+  echo "FATAL: data stores not healthy; nothing restored"; docker logs --tail 20 agentlens-clickhouse-1 2>&1 | cut -c1-200; exit 1
+fi
 
 echo "== 4. schema revision check"
 server_rev=$(docker exec agentlens-postgres-1 psql -U agentlens -d agentlens -Atc "select version_num from alembic_version")
@@ -70,7 +84,7 @@ docker exec agentlens-postgres-1 psql -U agentlens -d agentlens -v ON_ERROR_STOP
 docker exec agentlens-postgres-1 rm -rf /tmp/restore
 
 echo "== 7. ClickHouse: replace spans, keep them a year"
-CH="docker exec -i agentlens-clickhouse-1 clickhouse-client --password $AGENTLENS_CLICKHOUSE_PASSWORD"
+CH="docker exec -i agentlens-clickhouse-1 clickhouse-client --user agentlens --password $AGENTLENS_CLICKHOUSE_PASSWORD"
 $CH -q "TRUNCATE TABLE agentlens.spans"
 $CH -q "INSERT INTO agentlens.spans FORMAT Native" < "$WORK/spans.native"
 $CH -q "ALTER TABLE agentlens.spans MODIFY TTL toDateTime(start_time) + INTERVAL 365 DAY"

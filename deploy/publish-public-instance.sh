@@ -41,7 +41,7 @@ trap 'aws s3 rm --only-show-errors "s3://$BUCKET/$KEY" || true' EXIT
 echo "== 4. restore on $INSTANCE_ID"
 SCRIPT=$(base64 -w0 deploy/restore-public-data.sh)
 PARAMS=$(python -c 'import json,sys; print(json.dumps({"commands": [sys.argv[1]], "executionTimeout": ["900"]}))' \
-  "echo $SCRIPT | base64 -d > /tmp/restore-public-data.sh && IMAGE='$REPO:$TAG' BUNDLE_URL='$URL' bash /tmp/restore-public-data.sh 2>&1")
+  "echo $SCRIPT | base64 -d > /tmp/restore-public-data.sh && RESET_CLICKHOUSE='${RESET_CLICKHOUSE:-0}' IMAGE='$REPO:$TAG' BUNDLE_URL='$URL' bash /tmp/restore-public-data.sh 2>&1")
 CID=$(aws ssm send-command --region $REGION --instance-ids "$INSTANCE_ID" --document-name AWS-RunShellScript \
   --comment "agentlens public restore $TAG" --parameters "$PARAMS" --query Command.CommandId --output text)
 echo "command $CID"
