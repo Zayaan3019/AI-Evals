@@ -11,9 +11,11 @@ name: Deploy
 # workflow never needs to know its value. Existing eval-gate.yml (the
 # PR-time regression gate) is untouched by this file.
 
+# Manual only. The public instance is currently published with
+# deploy/publish-public-instance.sh (image to ECR, data restore over SSM) and
+# its dashboard is served by Vercel (frontend/vercel.json); this workflow is
+# the CloudFront/S3 path and needs the infra/projects/ai-evals OIDC role.
 on:
-  push:
-    branches: [main]
   workflow_dispatch: {}
 
 permissions:

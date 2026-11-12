@@ -1,0 +1,39 @@
+name: CI
+
+# Fast checks on every push: the SDK's test suite (no external services) and
+# a type-checked production build of the dashboard. The platform suite needs
+# Postgres, ClickHouse and Redis and runs against the docker-compose stack.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e "./sdk[otlp,dev]"
+      - run: python -m pytest -q sdk/tests
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
