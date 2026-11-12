@@ -8,6 +8,39 @@ An evaluation and reliability platform for LLM agent systems.
 > This README describes only what actually runs today. Anything not listed under
 > "What works" does not exist in this repository.
 
+**Live, read-only instance:** https://agentlens-three.vercel.app. The dashboard is
+on Vercel and the API on EC2, serving the `public` tenant: the benchmark below,
+real Groq model calls throughout.
+
+## Headline benchmark
+
+One QA agent, 100 SQuAD v1.1 dev questions, four configurations, three graders
+(exact match and token F1 against the gold answer, plus an LLM judge):
+
+| Configuration | Exact match | Token F1 | Judge (gpt-oss-120b) |
+|---|---|---|---|
+| gpt-oss-120b + BM25 retrieval (baseline) | 0.38 | 0.686 | 0.851 |
+| gpt-oss-20b + BM25 | 0.39 | 0.664 | 0.832 |
+| qwen3.8-27b + BM25 | 0.45 | 0.654 | 0.754 |
+| gpt-oss-20b, no retrieval (ablation) | 0.10 | 0.216 | 0.329 |
+
+The paired-bootstrap gate passes 20b as a replacement for 120b. It fails qwen and
+the ablation (F1 −0.47, 95% CI [−0.556, −0.378]). It returns `insufficient_data`
+on a 10-question run instead of guessing.
+
+The judge is calibrated against 150 SciEntsBank answers graded by the
+SemEval-2013 expert annotators. gpt-oss-120b reaches Cohen's κ 0.61 (80.7% raw
+agreement). gpt-oss-20b reaches κ 0.44 (72%), so 120b is the judge of record.
+
+To reproduce it, replay the committed record/replay cassette
+(`examples/data/benchmark_cassette.json`). This makes no provider calls:
+
+```bash
+python -m agentlens_platform.examples.benchmark --tenant live
+```
+
+To record fresh calls instead, add `GROQ_API_KEY=... AGENTLENS_JUDGE_RECORD=1`.
+
 ---
 
 ## What works today
