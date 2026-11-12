@@ -62,7 +62,7 @@ nested spans.
 | Overhead budget < 2 ms p99 | measured | `tests/test_overhead.py` (3 tests) |
 | Decorators + context managers, sync and async | `sdk/src/agentlens/api.py` | `tests/test_api.py` (30 tests) |
 
-**150 SDK tests + 254 platform tests = 404, all passing.** Real output below.
+**150 SDK tests + 279 platform tests = 429 passing (plus 1 POSIX-only skip).** Real output below.
 
 ---
 
@@ -626,14 +626,14 @@ $ cd sdk && ../.venv/Scripts/python.exe -m pytest tests/ -q
 ........................................................................ [ 48%]
 ........................................................................ [ 96%]
 ......                                                                   [100%]
-150 passed in 39.39s
+150 passed in 42.15s
 
 $ cd platform && ../.venv/Scripts/python.exe -m pytest tests/ -q
-........................................................................ [ 28%]
-........................................................................ [ 56%]
-...........................................s............................ [ 84%]
-.......................................                                  [100%]
-254 passed, 1 skipped in 193.70s (0:03:13)
+........................................................................ [ 25%]
+........................................................................ [ 51%]
+....................................................................s... [ 77%]
+................................................................         [100%]
+279 passed, 1 skipped in 239.28s (0:03:59)
 ```
 
 The platform suite requires the docker stack and **errors rather than skips**
@@ -655,16 +655,21 @@ RFC 2606) — the black-hole collector is real, not mocked.
 
 ## Limitations (stated, not omitted)
 
-* **Phases 2–10 do not exist.** No ingestion service, no ClickHouse, no
-  Postgres, no evaluators, no regression gate, no UI, no `docker compose`.
-* **Pricing covers Anthropic first-party rates only** (`pricing_2026-06-24.json`,
-  sourced and dated in the file's `provenance` block). Other providers resolve to
-  `cost.status = "no_pricing"` until a table is supplied. Bedrock/Vertex partner
-  pricing and Opus 5 fast-mode rates are *not* modelled; both are called out in
-  the table's `caveats`.
-* **Sonnet 5's introductory rate is not applied.** The table records the standard
-  $3/$15; the source lists $2/$10 through 2026-08-31, so costs computed for calls
-  in that window are overstated. Override with a custom table.
+* **Pricing covers Anthropic first-party and Groq on-demand rates only**
+  (`pricing_2026-11-12.json`, each provider sourced and dated in the file's
+  `provenance` block; the earlier `pricing_2026-06-24.json` is kept so old spans
+  stay re-computable). Other providers resolve to `cost.status = "no_pricing"`
+  until a table is supplied. Bedrock/Vertex partner pricing and Opus 5 fast-mode
+  rates are *not* modelled, and Groq free-tier traffic is costed at list price
+  (it is rate limited, not billed); all three are called out in the table's
+  `caveats`.
+* **The headline benchmark is small and easy:** 100 SQuAD v1.1 questions. The
+  judge is calibrated (Cohen's kappa 0.611) on a different, human-graded set
+  (SciEntsBank), and it scores a little higher than the human graders do.
+* **The public instance is one small EC2 host** with memory-capped containers
+  and read-only access. It is a demo, not a highly available deployment.
+* **`eval-gate.yml` has not yet gated a real pull request.** The gate is
+  exercised by the test suite and through the live `/gate` endpoint.
 * **Redaction is regex-based and not a compliance guarantee.** Names, addresses,
   and dates of birth are not detected; see `KNOWN_LIMITATIONS` in
   `redaction.py` for the full list.
@@ -733,7 +738,7 @@ platform/                     package `agentlens_platform` (Phases 2-7)
     api/app.py                FastAPI read + analytics endpoints
     ci.py                     CI entrypoint, distinct exit code per verdict
   alembic/                    migrations (incl. RLS policies, app role)
-  tests/                      254 tests, all against real Postgres + ClickHouse
+  tests/                      279 tests (+1 POSIX-only skip), real Postgres + ClickHouse
 
 frontend/                     React + Vite + TanStack Query UI (Phase 8)
 bench/                        benchmark harness (Phase 10)
