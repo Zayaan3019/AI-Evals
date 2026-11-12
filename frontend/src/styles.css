@@ -109,6 +109,21 @@ select, input {
 
 .notice { padding: 14px; border-radius: 8px; border: 1px solid var(--border); color: var(--muted); }
 .notice.error { border-color: var(--err); color: var(--err); }
+.notice.unreachable {
+  display: flex; gap: 12px; align-items: center; justify-content: space-between;
+  border-style: dashed; font-size: 13px;
+}
+.notice.outage {
+  margin-bottom: 18px; line-height: 1.55; font-size: 13px; color: var(--text);
+  border-color: var(--warn); border-left-width: 3px;
+}
+.notice.outage strong { color: var(--warn); }
+button.linkish {
+  background: none; border: 0; padding: 0; font: inherit; font-weight: 600;
+  color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+button.linkish:disabled { color: var(--muted); cursor: default; text-decoration: none; }
+button.linkish:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 
 .tree-row { display: flex; align-items: baseline; gap: 8px; padding: 3px 0; }
 .tree-indent { color: var(--muted); white-space: pre; }

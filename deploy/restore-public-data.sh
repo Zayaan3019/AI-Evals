@@ -75,7 +75,19 @@ fi
 
 echo "== 5. app on the new image (creates the ClickHouse schema if absent)"
 $DC up -d app
-for i in $(seq 1 40); do curl -s -m 3 http://localhost:8100/health | grep -q '"status"' && break; sleep 3; done
+# The schema is created in the app's startup hook, so the restore cannot go on
+# until the app answers. Fail loudly instead of falling through to a TRUNCATE
+# on a table that was never created.
+app_up=0
+for i in $(seq 1 60); do
+  if curl -s -m 3 http://localhost:8100/health | grep -q '"status"'; then app_up=1; break; fi
+  sleep 3
+done
+if [ "$app_up" != 1 ]; then
+  echo "FATAL: the app did not answer /health within 180 s. Last log lines:"
+  docker logs --tail 40 agentlens-app-1 2>&1
+  exit 1
+fi
 
 echo "== 6. Postgres: replace all tenant data in one transaction"
 docker exec agentlens-postgres-1 rm -rf /tmp/restore

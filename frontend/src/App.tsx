@@ -5,6 +5,7 @@ import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { EvalsPage } from "./pages/EvalsPage";
 import { EvalRunPage } from "./pages/EvalRunPage";
 import { HealthBadge } from "./components/HealthBadge";
+import { OutageBanner } from "./components/OutageBanner";
 
 const navClass = ({ isActive }: { isActive: boolean }) => (isActive ? "active" : "");
 
@@ -38,6 +39,8 @@ export function App() {
           </a>
         </div>
       )}
+
+      <OutageBanner />
 
       <Routes>
         <Route path="/" element={<Navigate to="/evals" replace />} />
