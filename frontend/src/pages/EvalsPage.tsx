@@ -133,6 +133,11 @@ export function EvalsPage() {
   const [params, setParams] = useSearchParams();
   const runsQuery = useQuery({ queryKey: ["eval-runs"], queryFn: () => api.evalRuns(100) });
   const calibration = useQuery({ queryKey: ["calibration"], queryFn: api.calibration });
+  // A judge configuration used only for grading (e.g. the stricter-threshold
+  // run) has no human-labelled answers; an empty row would read as a failure.
+  const calibrated = (calibration.data?.judges ?? []).filter(
+    (j) => (j.calibration ? j.calibration.n : j.n_labelled) > 0,
+  );
 
   const runs = useMemo(() => latestRuns(runsQuery.data?.runs ?? []), [runsQuery.data]);
   const gateRuns = runs.filter((r) => purpose(r) !== "judge_calibration");
@@ -248,10 +253,10 @@ export function EvalsPage() {
         <QueryState
           isLoading={calibration.isLoading}
           error={calibration.error}
-          isEmpty={calibration.data?.judges.length === 0}
+          isEmpty={calibrated.length === 0}
           emptyMessage="No judge has been calibrated yet."
         >
-          <CalibrationTable judges={calibration.data?.judges ?? []} />
+          <CalibrationTable judges={calibrated} />
           {calibration.data && calibration.data.labellers.length > 0 && (
             <p className="sub" style={{ marginTop: 10 }}>
               Human labels: {calibration.data.labellers.join("; ")}.
