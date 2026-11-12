@@ -126,7 +126,7 @@ export function TraceDetailPage() {
   return (
     <>
       <div className="controls">
-        <Link to="/">← Traces</Link>
+        <Link to="/traces">← Traces</Link>
         <span className="mono muted">{traceId}</span>
       </div>
 

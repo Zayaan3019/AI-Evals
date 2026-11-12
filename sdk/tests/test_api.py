@@ -172,7 +172,7 @@ def test_cost_is_computed_from_usage_and_pricing_table(lens) -> None:
     assert attrs[sc.COST_MICRO_USD] == 5_000_000
     assert attrs[sc.COST_CURRENCY] == "USD"
     assert attrs[sc.COST_STATUS] == "ok"
-    assert attrs[sc.COST_PRICING_VERSION] == "2026-06-24"
+    assert attrs[sc.COST_PRICING_VERSION] == "2026-11-12"
 
 
 def test_unpriced_model_records_status_not_a_fake_zero(lens) -> None:

@@ -27,7 +27,7 @@ _DATA_DIR = Path(__file__).parent / "data"
 
 #: Pricing table shipped with the SDK. Selected explicitly (not "newest file
 #: wins") so adding a file to the data directory cannot silently change costs.
-DEFAULT_PRICING_VERSION = "2026-06-24"
+DEFAULT_PRICING_VERSION = "2026-11-12"
 
 
 class CostStatus(str, Enum):

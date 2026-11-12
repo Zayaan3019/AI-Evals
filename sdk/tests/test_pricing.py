@@ -17,7 +17,7 @@ from agentlens.pricing import (
 
 def test_table_loads_with_provenance() -> None:
     table = default_table()
-    assert table.pricing_version == "2026-06-24"
+    assert table.pricing_version == "2026-11-12"
     assert table.currency == "USD"
     # Numbers without a stated source are indistinguishable from invented ones.
     assert "anthropic" in table.provenance

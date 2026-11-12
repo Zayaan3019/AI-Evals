@@ -155,8 +155,115 @@ export interface Health {
   buffered_spans: number;
 }
 
+// -- evaluation ------------------------------------------------------------
+
+export interface EvaluatorSummary {
+  identity: string;
+  n: number;
+  n_scored: number;
+  n_errors: number;
+  mean_score: number | null;
+  pass_rate: number | null;
+}
+
+export interface EvalRunSummary {
+  run_id: string;
+  system_label: string;
+  status: string;
+  dataset: { slug: string; name: string };
+  started_at: string | null;
+  finished_at: string | null;
+  metadata: Record<string, unknown>;
+  case_count: number;
+  evaluators: EvaluatorSummary[];
+}
+
+export interface CaseResult {
+  external_id: string;
+  inputs: Record<string, unknown>;
+  expected_output: string | null;
+  actual_output: string | null;
+  scores: {
+    identity: string;
+    score: number | null;
+    passed: boolean | null;
+    explanation: string | null;
+    error: string | null;
+  }[];
+}
+
+export type GateVerdict = "pass" | "fail" | "incomparable" | "insufficient_data" | "error_rate";
+
+export interface GateReport {
+  verdict: GateVerdict;
+  blocks_release: boolean;
+  reason: string;
+  baseline: string;
+  candidate: string;
+  baseline_run_id: string;
+  candidate_run_id: string;
+  minimum_detectable_effect: number | null;
+  evaluators: {
+    identity: string;
+    regressed: boolean;
+    floor_breached: boolean;
+    floor: number | null;
+    dropped_cases: number;
+    note: string | null;
+    comparison: {
+      baseline_mean: number;
+      candidate_mean: number;
+      mean_difference: number;
+      ci_low: number;
+      ci_high: number;
+      p_value: number;
+      n_pairs: number;
+    } | null;
+  }[];
+  policy: {
+    max_mean_drop: number;
+    confidence: number;
+    resamples: number;
+    min_pairs: number;
+    max_error_rate: number;
+  };
+}
+
+export interface JudgeCalibration {
+  judge: string;
+  config_hash: string;
+  provider: string | null;
+  model: string | null;
+  threshold: number | null;
+  dataset: { slug: string; name: string };
+  labels_in_dataset: number;
+  n_labelled: number;
+  note: string | null;
+  calibration: {
+    n: number;
+    cohens_kappa: number | null;
+    binary_agreement: number | null;
+    spearman_r: number | null;
+    pearson_r: number | null;
+    mean_absolute_error: number | null;
+    judge_mean: number;
+    human_mean: number;
+    judge_is_biased_high: boolean;
+  } | null;
+}
+
 export const api = {
   health: () => get<Health>("/health"),
+  evalRuns: (limit = 50) => get<{ runs: EvalRunSummary[]; count: number }>("/v1/evals/runs", { limit }),
+  evalResults: (runId: string) =>
+    get<{ run_id: string; system_label: string; cases: CaseResult[]; count: number }>(
+      `/v1/evals/runs/${runId}/results`,
+      { limit: 500 },
+    ),
+  gate: (baseline: string, candidate: string) =>
+    get<GateReport>("/v1/evals/gate", { baseline, candidate }),
+  calibration: () =>
+    get<{ judges: JudgeCalibration[]; labellers: string[] }>("/v1/evals/calibration"),
   traces: (hours: number, limit = 50) =>
     get<{ traces: TraceSummary[]; count: number }>("/v1/traces", { hours, limit }),
   trace: (traceId: string) =>

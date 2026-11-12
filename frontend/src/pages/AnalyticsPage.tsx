@@ -6,7 +6,7 @@ import { QueryState } from "../components/QueryState";
 const METRICS = ["latency_ms", "input_tokens", "output_tokens", "cost_micro_usd"];
 
 export function AnalyticsPage() {
-  const [hours, setHours] = useState(24);
+  const [hours, setHours] = useState(720);
   const [metric, setMetric] = useState("latency_ms");
 
   const models = useQuery({ queryKey: ["models", hours], queryFn: () => api.models(hours) });
@@ -28,6 +28,8 @@ export function AnalyticsPage() {
           <option value={6}>Last 6 hours</option>
           <option value={24}>Last 24 hours</option>
           <option value={168}>Last 7 days</option>
+          <option value={720}>Last 30 days</option>
+          <option value={2160}>Last 90 days</option>
         </select>
       </div>
 

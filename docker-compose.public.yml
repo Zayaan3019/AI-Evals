@@ -1,0 +1,45 @@
+# Overlay for the public, read-only instance on one small EC2 host (t3.micro,
+# 1 GB RAM). Layers on top of docker-compose.yml and docker-compose.prod.yml:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.public.yml up -d
+#
+# What it changes, and why:
+#   1. Memory caps and a low-memory ClickHouse config. ClickHouse's defaults
+#      assume gigabytes of RAM; on this host the kernel OOM-killed it. The
+#      config in deploy/ caps the server at ~340 MB and was verified under a
+#      430 MB container limit.
+#   2. Restart policies on the data stores, so a kill or a reboot recovers.
+#   3. Public read access: GET endpoints answer without an API key, scoped by
+#      Postgres row-level security to the one tenant named here. Every write
+#      endpoint (OTLP ingest, /v1/flush) still requires a key.
+#
+# There is no traffic generator. The data this instance serves was produced by
+# real runs of the platform (see platform/src/agentlens_platform/examples/benchmark.py)
+# and restored with deploy/restore-public-data.sh.
+
+name: agentlens
+
+services:
+  postgres:
+    restart: unless-stopped
+    mem_limit: 160m
+    command: ["postgres", "-c", "shared_buffers=32MB", "-c", "max_connections=40", "-c", "work_mem=2MB"]
+
+  redis:
+    restart: unless-stopped
+    mem_limit: 48m
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "32mb", "--maxmemory-policy", "allkeys-lru"]
+
+  clickhouse:
+    restart: unless-stopped
+    mem_limit: 450m
+    memswap_limit: 900m
+    volumes:
+      - ./deploy/clickhouse-low-memory.xml:/etc/clickhouse-server/config.d/low-memory.xml:ro
+      - ./deploy/clickhouse-low-memory-users.xml:/etc/clickhouse-server/users.d/low-memory.xml:ro
+
+  app:
+    mem_limit: 260m
+    environment:
+      AGENTLENS_PUBLIC_READ_TENANT: public
+      AGENTLENS_SPAN_RETENTION_DAYS: "365"

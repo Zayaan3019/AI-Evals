@@ -74,6 +74,13 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8100
 
+    #: Slug of a tenant whose data may be READ without an API key, or None.
+    #: Exists for a public read-only deployment: the alternative is shipping a key
+    #: in the browser bundle or at the edge, and a key that everyone holds is
+    #: not a credential. Anonymous access is read-only by construction -- it is
+    #: honoured only by GET handlers, and OTLP ingestion never consults it.
+    public_read_tenant: str | None = None
+
     @property
     def clickhouse_url(self) -> str:
         scheme = "https" if self.clickhouse_secure else "http"

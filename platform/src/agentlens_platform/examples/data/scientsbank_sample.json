@@ -1,0 +1,1209 @@
+{
+ "source": "SciEntsBank, SemEval-2013 Task 7 (Dzikovska et al., 2013), unseen-domains test split",
+ "license": "CC BY 4.0",
+ "url": "https://huggingface.co/datasets/nkazi/SciEntsBank",
+ "seed": 20261112,
+ "labelling": "Human expert annotators graded each student answer against the reference answer. label_2way is the 2-way scheme defined by the dataset authors.",
+ "items": [
+  {
+   "id": "EV.11.296.1",
+   "question": "What is the relationship between an organism's range of tolerance and its optimum condition?",
+   "reference_answer": "The optimum condition is within the range of tolerance.",
+   "student_answer": "In both conditions the organism can still grow.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.11.646.1",
+   "question": "What is the relationship between an organism's range of tolerance and its optimum condition?",
+   "reference_answer": "The optimum condition is within the range of tolerance.",
+   "student_answer": "Optimum is best thing that animals needs and organism is an animals, Living things.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.21.159.1",
+   "question": "Ms. Larson's class found the best condition to hatch brine-shrimp eggs: 2 spoons of salt in 200 milliliters of water. The class decided to hatch more eggs. Ms. Larson mixed a new solution using 2 spoons of salt in 200 milliliters of water. Later, she discovered she had used a slightly different size spoon to measure the salt. Even with this different solution, some eggs still hatched. Why did some eggs still hatch?",
+   "reference_answer": "The different salt solution is within the range of tolerance for brine shrimp eggs to hatch.",
+   "student_answer": "Because they can probably handle more salt than others.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "EV.21.244.1",
+   "question": "Ms. Larson's class found the best condition to hatch brine-shrimp eggs: 2 spoons of salt in 200 milliliters of water. The class decided to hatch more eggs. Ms. Larson mixed a new solution using 2 spoons of salt in 200 milliliters of water. Later, she discovered she had used a slightly different size spoon to measure the salt. Even with this different solution, some eggs still hatched. Why did some eggs still hatch?",
+   "reference_answer": "The different salt solution is within the range of tolerance for brine shrimp eggs to hatch.",
+   "student_answer": "Since the 2 spoons with the new spoon was still in the range of tolerance.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "EV.21.436.1",
+   "question": "Ms. Larson's class found the best condition to hatch brine-shrimp eggs: 2 spoons of salt in 200 milliliters of water. The class decided to hatch more eggs. Ms. Larson mixed a new solution using 2 spoons of salt in 200 milliliters of water. Later, she discovered she had used a slightly different size spoon to measure the salt. Even with this different solution, some eggs still hatched. Why did some eggs still hatch?",
+   "reference_answer": "The different salt solution is within the range of tolerance for brine shrimp eggs to hatch.",
+   "student_answer": "The eggs still hatched because she still put the salt but with a different amount.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.21.640.1",
+   "question": "Ms. Larson's class found the best condition to hatch brine-shrimp eggs: 2 spoons of salt in 200 milliliters of water. The class decided to hatch more eggs. Ms. Larson mixed a new solution using 2 spoons of salt in 200 milliliters of water. Later, she discovered she had used a slightly different size spoon to measure the salt. Even with this different solution, some eggs still hatched. Why did some eggs still hatch?",
+   "reference_answer": "The different salt solution is within the range of tolerance for brine shrimp eggs to hatch.",
+   "student_answer": "Because the spoon was smaller.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.22a.249.1",
+   "question": "John wanted to find the optimum conditions for growing peas. He planted pea seeds in 2 separate pots. He used the same amount and type of soil in each pot. He recorded daily care (amount of water and plant food) and results (plant length and number of leaves) after 2 weeks, as shown in the following chart. Did John do a good job of controlling the variables in his experiment? Explain why or why not.",
+   "reference_answer": "No. John changed 2 variables at the same time (amount of water and amount of plant food) so John can not know which variables made a difference.",
+   "student_answer": "Yes, Because he organized his work good.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.22a.265.1",
+   "question": "John wanted to find the optimum conditions for growing peas. He planted pea seeds in 2 separate pots. He used the same amount and type of soil in each pot. He recorded daily care (amount of water and plant food) and results (plant length and number of leaves) after 2 weeks, as shown in the following chart. Did John do a good job of controlling the variables in his experiment? Explain why or why not.",
+   "reference_answer": "No. John changed 2 variables at the same time (amount of water and amount of plant food) so John can not know which variables made a difference.",
+   "student_answer": "No, Because he did not control any variables.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.25.113.1",
+   "question": "The mangrove is a tree found only in saltwater environments. What would happen if you moved a mangrove tree to a freshwater environment? Explain your answer.",
+   "reference_answer": "The mangrove tree would probably die or the tree would not grow well because the tree needs a saltwater environment. Water without salt is outside of the tree's range of tolerance for salt.",
+   "student_answer": "It will die. Because the tree cannot survive without salt it will die because of its range of tolerance.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "EV.25.434.1",
+   "question": "The mangrove is a tree found only in saltwater environments. What would happen if you moved a mangrove tree to a freshwater environment? Explain your answer.",
+   "reference_answer": "The mangrove tree would probably die or the tree would not grow well because the tree needs a saltwater environment. Water without salt is outside of the tree's range of tolerance for salt.",
+   "student_answer": "The mangrove would probably die because saltwater environments is it is optimum condition.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.25.545.1",
+   "question": "The mangrove is a tree found only in saltwater environments. What would happen if you moved a mangrove tree to a freshwater environment? Explain your answer.",
+   "reference_answer": "The mangrove tree would probably die or the tree would not grow well because the tree needs a saltwater environment. Water without salt is outside of the tree's range of tolerance for salt.",
+   "student_answer": "The mangrove tree will end up being dead because it is only saltwater tree.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.25.628.1",
+   "question": "The mangrove is a tree found only in saltwater environments. What would happen if you moved a mangrove tree to a freshwater environment? Explain your answer.",
+   "reference_answer": "The mangrove tree would probably die or the tree would not grow well because the tree needs a saltwater environment. Water without salt is outside of the tree's range of tolerance for salt.",
+   "student_answer": "Maybe the environment might change by taking the tree because maybe a tree keeps the place cool if you take it out it will be hot.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.25.636.1",
+   "question": "The mangrove is a tree found only in saltwater environments. What would happen if you moved a mangrove tree to a freshwater environment? Explain your answer.",
+   "reference_answer": "The mangrove tree would probably die or the tree would not grow well because the tree needs a saltwater environment. Water without salt is outside of the tree's range of tolerance for salt.",
+   "student_answer": "It would die because it is use to the saltwater.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.35a.234.1",
+   "question": "Andrew wanted to find the optimum conditions for his chickens to lay eggs. He divided his 20 chickens into 2 groups, X and Y, and recorded their daily care (amount of chicken feed and calcium) and egg production for 2 weeks. Did Andrew do a good job of controlling the variables in his experiment? Explain why or why not.",
+   "reference_answer": "No. Andrew changed 2 variables at the same time (amount of chicken feed and the amount of calcium) so Andrew can not know which variables made a difference.",
+   "student_answer": "Yes, Yes because he has all the stuff recorded right.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.35a.421.1",
+   "question": "Andrew wanted to find the optimum conditions for his chickens to lay eggs. He divided his 20 chickens into 2 groups, X and Y, and recorded their daily care (amount of chicken feed and calcium) and egg production for 2 weeks. Did Andrew do a good job of controlling the variables in his experiment? Explain why or why not.",
+   "reference_answer": "No. Andrew changed 2 variables at the same time (amount of chicken feed and the amount of calcium) so Andrew can not know which variables made a difference.",
+   "student_answer": "Yes, he gathered all the information and kept track. The calcium added is even with the chicken food and they have the same range.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.35a.509.1",
+   "question": "Andrew wanted to find the optimum conditions for his chickens to lay eggs. He divided his 20 chickens into 2 groups, X and Y, and recorded their daily care (amount of chicken feed and calcium) and egg production for 2 weeks. Did Andrew do a good job of controlling the variables in his experiment? Explain why or why not.",
+   "reference_answer": "No. Andrew changed 2 variables at the same time (amount of chicken feed and the amount of calcium) so Andrew can not know which variables made a difference.",
+   "student_answer": "No, On the calcium for group section he should have made them even like 10 and 30 grams, or else he did excellent.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.35a.531.1",
+   "question": "Andrew wanted to find the optimum conditions for his chickens to lay eggs. He divided his 20 chickens into 2 groups, X and Y, and recorded their daily care (amount of chicken feed and calcium) and egg production for 2 weeks. Did Andrew do a good job of controlling the variables in his experiment? Explain why or why not.",
+   "reference_answer": "No. Andrew changed 2 variables at the same time (amount of chicken feed and the amount of calcium) so Andrew can not know which variables made a difference.",
+   "student_answer": "Yes, I think yes because it was well controlled and well organized. But he could have done better.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.8c.161.1",
+   "question": "Rachael tried to hatch brine shrimp under a range of salty conditions (different amounts of salt from 0 to 9 milliliters in the same amount of water). (The graph shows that no eggs hatched in the 0 milliliters and 9 milliliters salt solutions). Rachael thinks that the unhatched brine shrimp eggs in environments outside the range of tolerance for salt might still be viable. Describe how she could find out.",
+   "reference_answer": "Rachael could put the unhatched eggs in a salt solution that is within the range of tolerance.",
+   "student_answer": "She can put the optimum level of salt into the water or take out the eggs then put the optimum level of salt.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "EV.8c.208.1",
+   "question": "Rachael tried to hatch brine shrimp under a range of salty conditions (different amounts of salt from 0 to 9 milliliters in the same amount of water). (The graph shows that no eggs hatched in the 0 milliliters and 9 milliliters salt solutions). Rachael thinks that the unhatched brine shrimp eggs in environments outside the range of tolerance for salt might still be viable. Describe how she could find out.",
+   "reference_answer": "Rachael could put the unhatched eggs in a salt solution that is within the range of tolerance.",
+   "student_answer": "She can start the experiment again except with more salt.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.8c.467.1",
+   "question": "Rachael tried to hatch brine shrimp under a range of salty conditions (different amounts of salt from 0 to 9 milliliters in the same amount of water). (The graph shows that no eggs hatched in the 0 milliliters and 9 milliliters salt solutions). Rachael thinks that the unhatched brine shrimp eggs in environments outside the range of tolerance for salt might still be viable. Describe how she could find out.",
+   "reference_answer": "Rachael could put the unhatched eggs in a salt solution that is within the range of tolerance.",
+   "student_answer": "She could add less salt to experiment to see what her results will be.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "EV.8c.639.1",
+   "question": "Rachael tried to hatch brine shrimp under a range of salty conditions (different amounts of salt from 0 to 9 milliliters in the same amount of water). (The graph shows that no eggs hatched in the 0 milliliters and 9 milliliters salt solutions). Rachael thinks that the unhatched brine shrimp eggs in environments outside the range of tolerance for salt might still be viable. Describe how she could find out.",
+   "reference_answer": "Rachael could put the unhatched eggs in a salt solution that is within the range of tolerance.",
+   "student_answer": "She could probably put a little salt and stir softly and write down what happens next.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.22a.990.1",
+   "question": "Look at the tables for Aisha. She moved each of her hands out of the way of a falling cup. She continued until she reached 5 hits or 5 misses and then stopped. What is the stimulus in this activity?",
+   "reference_answer": "The stimulus is seeing or hearing the cup fall.",
+   "student_answer": "The stimulus is touch.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.24b1.172.1",
+   "question": "Throwing a ball uses a hinge joint and a ball-and-socket joint. Describe how each of these 2 joints moves when you throw a ball. The hinge joint ___.",
+   "reference_answer": "moves back-and-forth.",
+   "student_answer": "The shoulder moves back the elbow go back and the wrist go forward.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.24b1.180.1",
+   "question": "Throwing a ball uses a hinge joint and a ball-and-socket joint. Describe how each of these 2 joints moves when you throw a ball. The hinge joint ___.",
+   "reference_answer": "moves back-and-forth.",
+   "student_answer": "Goes back and forth when you throw a ball.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.24b1.566.1",
+   "question": "Throwing a ball uses a hinge joint and a ball-and-socket joint. Describe how each of these 2 joints moves when you throw a ball. The hinge joint ___.",
+   "reference_answer": "moves back-and-forth.",
+   "student_answer": "Closes and goes back.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.24b2.359.1",
+   "question": "Throwing a ball uses a hinge joint and a ball-and-socket joint. Describe how each of these 2 joints moves when you throw a ball. The ball-and-socket joint ___.",
+   "reference_answer": "rotates. moves in all directions. moves up-and-down, back-and-forth, and side-to-side.",
+   "student_answer": "Back and forth, side to side, up and down.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.34.285.1",
+   "question": "Why are leg bones so large compared to other bones in the human body?",
+   "reference_answer": "The leg bones need to be large because the leg bones carry a lot of weight.",
+   "student_answer": "They are so big because they hold most of your body weight.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.34.496.1",
+   "question": "Why are leg bones so large compared to other bones in the human body?",
+   "reference_answer": "The leg bones need to be large because the leg bones carry a lot of weight.",
+   "student_answer": "To keep stable.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.34.639.1",
+   "question": "Why are leg bones so large compared to other bones in the human body?",
+   "reference_answer": "The leg bones need to be large because the leg bones carry a lot of weight.",
+   "student_answer": "It is the biggest part of your body.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.34.642.1",
+   "question": "Why are leg bones so large compared to other bones in the human body?",
+   "reference_answer": "The leg bones need to be large because the leg bones carry a lot of weight.",
+   "student_answer": "They hold up your body.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.34.644.1",
+   "question": "Why are leg bones so large compared to other bones in the human body?",
+   "reference_answer": "The leg bones need to be large because the leg bones carry a lot of weight.",
+   "student_answer": "Because if we did not have legs we would be on the ground.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.35.144.1",
+   "question": "Describe how the muscles in the front and back of the leg work together to make the dancer's foot point.",
+   "reference_answer": "The muscle in the back of the leg (the gastrocnemius) contracts and the muscle in the front of the leg (the tibia) relaxes to make the foot point.",
+   "student_answer": "The tendon is pulling the muscle causing it to contract and move.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.35.497.1",
+   "question": "Describe how the muscles in the front and back of the leg work together to make the dancer's foot point.",
+   "reference_answer": "The muscle in the back of the leg (the gastrocnemius) contracts and the muscle in the front of the leg (the tibia) relaxes to make the foot point.",
+   "student_answer": "The muscles flex to make it point they get smaller and fatter because they pull up.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.35.611.1",
+   "question": "Describe how the muscles in the front and back of the leg work together to make the dancer's foot point.",
+   "reference_answer": "The muscle in the back of the leg (the gastrocnemius) contracts and the muscle in the front of the leg (the tibia) relaxes to make the foot point.",
+   "student_answer": "The back of the leg balances the dancer and the front contract muscle to hold her up.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.42a.259.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was the stimulus for Sam?",
+   "reference_answer": "Sam's stimulus was feeling (or seeing) the mosquito on Sam's arm.",
+   "student_answer": "Sam stimulus was telling her to jump up.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.42a.390.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was the stimulus for Sam?",
+   "reference_answer": "Sam's stimulus was feeling (or seeing) the mosquito on Sam's arm.",
+   "student_answer": "The stimulus was to feel it hit him.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.42a.487b.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was the stimulus for Sam?",
+   "reference_answer": "Sam's stimulus was feeling (or seeing) the mosquito on Sam's arm.",
+   "student_answer": "The bug landing on his arm.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.42a.491.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was the stimulus for Sam?",
+   "reference_answer": "Sam's stimulus was feeling (or seeing) the mosquito on Sam's arm.",
+   "student_answer": "Vision - Sam slapping his arm.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.42a.501.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was the stimulus for Sam?",
+   "reference_answer": "Sam's stimulus was feeling (or seeing) the mosquito on Sam's arm.",
+   "student_answer": "The stimulus is vision because he saw the mosquito.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.42a.629.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was the stimulus for Sam?",
+   "reference_answer": "Sam's stimulus was feeling (or seeing) the mosquito on Sam's arm.",
+   "student_answer": "Sam saw the mosquito him.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.42b.602.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was Sam's response?",
+   "reference_answer": "Sam's response was to slap the mosquito.",
+   "student_answer": "He was slapping the mosquito and bumped Jasmine.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.42b.614.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was Sam's response?",
+   "reference_answer": "Sam's response was to slap the mosquito.",
+   "student_answer": "Sam's response was constantly slapping the mosquito causing to spill the pop on Jasmine's lap.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.42b.628.1",
+   "question": "Sam and Jasmine were sitting on a park bench eating their lunches. A mosquito landed on Sam's arm and Sam began slapping at it. When he did that, he knocked Jasmine's soda into her lap, causing her to jump up. What was Sam's response?",
+   "reference_answer": "Sam's response was to slap the mosquito.",
+   "student_answer": "She started slapping it.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.43.146.1",
+   "question": "During class Corey used the falling cup tool to check how fast he could move his hands and feet. Corey found that he couldn't move his right foot as fast as he could move his right hand. Use what you know about stimulus response time to explain why his right hand is faster than his right foot.",
+   "reference_answer": "The right hand is faster than the right foot because the foot is farther from the brain. Therefore the message to respond takes longer to reach the foot than the message takes to reach the hand.",
+   "student_answer": "Because the brain is closer to the hand and the left is not. Has close to the brain.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.43.259.1",
+   "question": "During class Corey used the falling cup tool to check how fast he could move his hands and feet. Corey found that he couldn't move his right foot as fast as he could move his right hand. Use what you know about stimulus response time to explain why his right hand is faster than his right foot.",
+   "reference_answer": "The right hand is faster than the right foot because the foot is farther from the brain. Therefore the message to respond takes longer to reach the foot than the message takes to reach the hand.",
+   "student_answer": "His hand easy but your foot it is hard to move when the cup drop.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.43.280.1",
+   "question": "During class Corey used the falling cup tool to check how fast he could move his hands and feet. Corey found that he couldn't move his right foot as fast as he could move his right hand. Use what you know about stimulus response time to explain why his right hand is faster than his right foot.",
+   "reference_answer": "The right hand is faster than the right foot because the foot is farther from the brain. Therefore the message to respond takes longer to reach the foot than the message takes to reach the hand.",
+   "student_answer": "Because his hands are closer to his brain.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.46.254.1",
+   "question": "What is it about the human skeleton that allows it to bend?",
+   "reference_answer": "The human skeleton can bend because the skeleton is articulated (has joints).",
+   "student_answer": "What allows us to bend is all of the joints.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.46.346.1",
+   "question": "What is it about the human skeleton that allows it to bend?",
+   "reference_answer": "The human skeleton can bend because the skeleton is articulated (has joints).",
+   "student_answer": "Our legs, our arms and our backs.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.46.593.1",
+   "question": "What is it about the human skeleton that allows it to bend?",
+   "reference_answer": "The human skeleton can bend because the skeleton is articulated (has joints).",
+   "student_answer": "What allows us to bend is our joints in our body.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.46.605.1",
+   "question": "What is it about the human skeleton that allows it to bend?",
+   "reference_answer": "The human skeleton can bend because the skeleton is articulated (has joints).",
+   "student_answer": "Joints, Where 2 bones meet, allows the body to bend.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.53a2.324.1",
+   "question": "Look at the picture of a cow bone. Describe how you can tell which part of the cow this bone came from.",
+   "reference_answer": "The bone is thin and curved.",
+   "student_answer": "It is a long skinny bone that looks like ribcages.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.53a2.439.1",
+   "question": "Look at the picture of a cow bone. Describe how you can tell which part of the cow this bone came from.",
+   "reference_answer": "The bone is thin and curved.",
+   "student_answer": "I think that because it looks like a rib.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.53a2.530.1",
+   "question": "Look at the picture of a cow bone. Describe how you can tell which part of the cow this bone came from.",
+   "reference_answer": "The bone is thin and curved.",
+   "student_answer": "It came from the ribs.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.53b.636.1",
+   "question": "Look at the picture of a cow bone. What is the function of this type of bone?",
+   "reference_answer": "The rib bones form a cage to protect the internal organs.",
+   "student_answer": "Support because you need it to live.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.59a.138.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was the stimulus for Max?",
+   "reference_answer": "The stimulus for Max was seeing the cat.",
+   "student_answer": "Max running after the cat.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.59a.140.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was the stimulus for Max?",
+   "reference_answer": "The stimulus for Max was seeing the cat.",
+   "student_answer": "Seeing a cat past him.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.59a.176.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was the stimulus for Max?",
+   "reference_answer": "The stimulus for Max was seeing the cat.",
+   "student_answer": "Look at the cat.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.59a.286.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was the stimulus for Max?",
+   "reference_answer": "The stimulus for Max was seeing the cat.",
+   "student_answer": "Max chasing the cat.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.59a.361.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was the stimulus for Max?",
+   "reference_answer": "The stimulus for Max was seeing the cat.",
+   "student_answer": "Seeing the cat run past him.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.59a.572.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was the stimulus for Max?",
+   "reference_answer": "The stimulus for Max was seeing the cat.",
+   "student_answer": "Max's stimulus is seeing the cat.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.59b.183.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was Max's response?",
+   "reference_answer": "Max's response was to run after the cat.",
+   "student_answer": "Max ran after the cat.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.59b.495.1",
+   "question": "Lee was walking his dog, Max. When a cat ran past them, Max ran after the cat, pulling Lee to the ground. What was Max's response?",
+   "reference_answer": "Max's response was to run after the cat.",
+   "student_answer": "Run after the cat.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.60.253.1",
+   "question": "Joe is a fast runner but he is slow at responding to the starting gun. How could Joe improve his start time?",
+   "reference_answer": "Joe could practice responding to the starting gun to improve Joe's start time.",
+   "student_answer": "Joe could practice on that specific thing so he will get better.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.60.530.1",
+   "question": "Joe is a fast runner but he is slow at responding to the starting gun. How could Joe improve his start time?",
+   "reference_answer": "Joe could practice responding to the starting gun to improve Joe's start time.",
+   "student_answer": "Practice at home.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.60.597.1",
+   "question": "Joe is a fast runner but he is slow at responding to the starting gun. How could Joe improve his start time?",
+   "reference_answer": "Joe could practice responding to the starting gun to improve Joe's start time.",
+   "student_answer": "Joe needs to practice hearing the gun.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.60.600.1",
+   "question": "Joe is a fast runner but he is slow at responding to the starting gun. How could Joe improve his start time?",
+   "reference_answer": "Joe could practice responding to the starting gun to improve Joe's start time.",
+   "student_answer": "Joe could improve practicing the start gun so he could be even faster.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.60.636.1",
+   "question": "Joe is a fast runner but he is slow at responding to the starting gun. How could Joe improve his start time?",
+   "reference_answer": "Joe could practice responding to the starting gun to improve Joe's start time.",
+   "student_answer": "Joe could improve his time by practicing.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "HB.6a.182.1",
+   "question": "What is the main job of muscles in the body?",
+   "reference_answer": "The main job of muscles is to move bones.",
+   "student_answer": "Helps move your bones.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.6a.427.1",
+   "question": "What is the main job of muscles in the body?",
+   "reference_answer": "The main job of muscles is to move bones.",
+   "student_answer": "To move the bones in your body.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "HB.6a.521.1",
+   "question": "What is the main job of muscles in the body?",
+   "reference_answer": "The main job of muscles is to move bones.",
+   "student_answer": "They help people do different things.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.12a.221.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the oil compared to water?",
+   "reference_answer": "The oil is less dense. The water is more dense.",
+   "student_answer": "Corn syrup then water because oil is the least densest.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12a.254.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the oil compared to water?",
+   "reference_answer": "The oil is less dense. The water is more dense.",
+   "student_answer": "The water has more dense.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12b.285.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the corn syrup compared to water?",
+   "reference_answer": "Corn syrup is denser than water.",
+   "student_answer": "It might go up one or 2 because it is at the bottom.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.12b.294.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the corn syrup compared to water?",
+   "reference_answer": "Corn syrup is denser than water.",
+   "student_answer": "The corn syrup is denser than water.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12b.468.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the corn syrup compared to water?",
+   "reference_answer": "Corn syrup is denser than water.",
+   "student_answer": "The corn syrup is denser than the water.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12b.556.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the corn syrup compared to water?",
+   "reference_answer": "Corn syrup is denser than water.",
+   "student_answer": "The corn syrup is more dense than water.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12c.505.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the oil compared to the corn syrup?",
+   "reference_answer": "Oil is less dense than corn syrup.",
+   "student_answer": "Corn syrup is more dense than oil so it floats.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12c.559.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the oil compared to the corn syrup?",
+   "reference_answer": "Oil is less dense than corn syrup.",
+   "student_answer": "It tells you that it is less dense.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12c.598.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the oil compared to the corn syrup?",
+   "reference_answer": "Oil is less dense than corn syrup.",
+   "student_answer": "Oil is less dense than corn syrup.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.12c.632.1",
+   "question": "Oil, water, and corn syrup are layered in a tall, thin container. All are at the same temperature. What does the layering tell you about the density of the oil compared to the corn syrup?",
+   "reference_answer": "Oil is less dense than corn syrup.",
+   "student_answer": "The oil is less dense than corn syrup.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.15a.369.1",
+   "question": "Look at the 2 pictures of drops on a flat, waterproof surface. The drop on the left is soapy water and the drop on the right is plain water. What causes the plain water to look like it does?",
+   "reference_answer": "Surface tension causes the plain water to look like a bead.",
+   "student_answer": "Because it is just plain water.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.15b.208.1",
+   "question": "Look at the 2 pictures of drops on a flat, waterproof surface. The drop on the left is soapy water and the drop on the right is plain water. What causes the soapy water to look like it does?",
+   "reference_answer": "The surface tension is broken by the soap so the soapy water drop is flat.",
+   "student_answer": "The chemicals in the soap made that drop break and fall to the ground.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.15b.599.1",
+   "question": "Look at the 2 pictures of drops on a flat, waterproof surface. The drop on the left is soapy water and the drop on the right is plain water. What causes the soapy water to look like it does?",
+   "reference_answer": "The surface tension is broken by the soap so the soapy water drop is flat.",
+   "student_answer": "Because when you put water and soap together it makes bubbles and it had more bubbles than water.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.15b.646.1",
+   "question": "Look at the 2 pictures of drops on a flat, waterproof surface. The drop on the left is soapy water and the drop on the right is plain water. What causes the soapy water to look like it does?",
+   "reference_answer": "The surface tension is broken by the soap so the soapy water drop is flat.",
+   "student_answer": "Because soap is heavy.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.16b.175.1",
+   "question": "Why does the level of the water in the straw go up when the bottle-and-straw thermometer is heated?",
+   "reference_answer": "Water expands when water is heated.",
+   "student_answer": "Because hot water expands and cold water contracts.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.16b.214.1",
+   "question": "Why does the level of the water in the straw go up when the bottle-and-straw thermometer is heated?",
+   "reference_answer": "Water expands when water is heated.",
+   "student_answer": "The water goes down, because it does not take up as much space.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.16b.278.1",
+   "question": "Why does the level of the water in the straw go up when the bottle-and-straw thermometer is heated?",
+   "reference_answer": "Water expands when water is heated.",
+   "student_answer": "The water inside expands when the water on the outside is hot.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.16b.633.1",
+   "question": "Why does the level of the water in the straw go up when the bottle-and-straw thermometer is heated?",
+   "reference_answer": "Water expands when water is heated.",
+   "student_answer": "It goes up because it is warm.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.17b.252.1",
+   "question": "Why does the water level in the straw go down when the bottle-and-straw thermometer is cooled, but not frozen?",
+   "reference_answer": "Water contracts when the water is cooled.",
+   "student_answer": "Because cold water is less dense than hot water.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.17b.507.1",
+   "question": "Why does the water level in the straw go down when the bottle-and-straw thermometer is cooled, but not frozen?",
+   "reference_answer": "Water contracts when the water is cooled.",
+   "student_answer": "Because when the temperature cools it goes down because that is what a regular thermometer would do.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.18.381.1",
+   "question": "Angie wrote in her science notebook, \"Evaporation only happens when water is heated to high temperatures.\" Explain why you agree or disagree.",
+   "reference_answer": "Disagree. Evaporation can occur at any temperature.",
+   "student_answer": "Yes I agree because when water is hot it fogs up.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.18.468.1",
+   "question": "Angie wrote in her science notebook, \"Evaporation only happens when water is heated to high temperatures.\" Explain why you agree or disagree.",
+   "reference_answer": "Disagree. Evaporation can occur at any temperature.",
+   "student_answer": "I disagree because evaporation is also involved with surface tension.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.18.493.1",
+   "question": "Angie wrote in her science notebook, \"Evaporation only happens when water is heated to high temperatures.\" Explain why you agree or disagree.",
+   "reference_answer": "Disagree. Evaporation can occur at any temperature.",
+   "student_answer": "I agree because if the temperature is higher the water will evaporate more.",
+   "label_5way": "contradictory",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.18.528.1",
+   "question": "Angie wrote in her science notebook, \"Evaporation only happens when water is heated to high temperatures.\" Explain why you agree or disagree.",
+   "reference_answer": "Disagree. Evaporation can occur at any temperature.",
+   "student_answer": "I disagree because sometimes if you leave water spilled it would eventually evaporate.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.18.632.1",
+   "question": "Angie wrote in her science notebook, \"Evaporation only happens when water is heated to high temperatures.\" Explain why you agree or disagree.",
+   "reference_answer": "Disagree. Evaporation can occur at any temperature.",
+   "student_answer": "I disagree because it can happen on any kinds of water.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.20a.178.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Ron could make the drop bigger. Ron could make the slope steeper.",
+   "student_answer": "Ron could take out about 2 or 3 papers to make the slope steeper.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.20a.188.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Ron could make the drop bigger. Ron could make the slope steeper.",
+   "student_answer": "One way he can do it is making the notebook steeper.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.20a.196.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Ron could make the drop bigger. Ron could make the slope steeper.",
+   "student_answer": "Ron can add more and more drops on the little bead more.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.20a.215.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Ron could make the drop bigger. Ron could make the slope steeper.",
+   "student_answer": "He can simply lift the notebook to a sharp angle.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.20a.432.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Ron could make the drop bigger. Ron could make the slope steeper.",
+   "student_answer": "He could make the drop bigger.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.20a.591.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Ron could make the drop bigger. Ron could make the slope steeper.",
+   "student_answer": "Shaking the notebook really hard.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.20b.155.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Expand the drop. Tilt the notebook.",
+   "student_answer": "Ron could open the notebook.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.20b.258.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Expand the drop. Tilt the notebook.",
+   "student_answer": "Ron can just add more water to the drop so it can go down.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.20b.279.1",
+   "question": "Ron covered his notebook with waxed paper. Then he placed a small drop of water in the middle of the notebook as shown in the picture. Even though the drop was on a slope, the drop stayed where he placed it. Describe 2 ways Ron can make the water move down the notebook without pushing the drop or blowing on it.",
+   "reference_answer": "Expand the drop. Tilt the notebook.",
+   "student_answer": "Ron can make the drop flow down the notebook by increasing the slope.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.21.351.1",
+   "question": "Matthew's mother left a plastic bottle full of water in the trunk of their car. The temperature dropped below 0 degrees Celsius that night. When his mother opened the trunk the next afternoon, she discovered the water bottle had cracked. Explain why the water bottle cracked.",
+   "reference_answer": "The water froze. Water expands when water freezes so the ice needed more space.",
+   "student_answer": "The water expanded.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.21.367.1",
+   "question": "Matthew's mother left a plastic bottle full of water in the trunk of their car. The temperature dropped below 0 degrees Celsius that night. When his mother opened the trunk the next afternoon, she discovered the water bottle had cracked. Explain why the water bottle cracked.",
+   "reference_answer": "The water froze. Water expands when water freezes so the ice needed more space.",
+   "student_answer": "It cracked because it expanded so much it could not hold all the ice in.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.21.599.1",
+   "question": "Matthew's mother left a plastic bottle full of water in the trunk of their car. The temperature dropped below 0 degrees Celsius that night. When his mother opened the trunk the next afternoon, she discovered the water bottle had cracked. Explain why the water bottle cracked.",
+   "reference_answer": "The water froze. Water expands when water freezes so the ice needed more space.",
+   "student_answer": "Because it was getting so cold that it cracked.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.22.362.1",
+   "question": "Which of these processes are involved in causing rain? A. evaporation B. condensation C. both evaporation and condensation. Explain your answer.",
+   "reference_answer": "Water evaporates to form vapor. The vapor condenses to form raindrops.",
+   "student_answer": "Because the water cycle says it warms up, evaporates through the clouds, and cools, then it is condensation.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.29.458.1",
+   "question": "Which is denser, hot water or cold water? How can you tell from lowering vials of hot water and cold water into a cup of room temperature water?",
+   "reference_answer": "Cold water is denser. Cold water sinks to the bottom of room temperature water. Hot water and less dense things float on room temperature water.",
+   "student_answer": "Cold. Because it went to the bottom.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.29.610.1",
+   "question": "Which is denser, hot water or cold water? How can you tell from lowering vials of hot water and cold water into a cup of room temperature water?",
+   "reference_answer": "Cold water is denser. Cold water sinks to the bottom of room temperature water. Hot water and less dense things float on room temperature water.",
+   "student_answer": "Cold. Because when you put the vial in cold water it went down.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.29.630.1",
+   "question": "Which is denser, hot water or cold water? How can you tell from lowering vials of hot water and cold water into a cup of room temperature water?",
+   "reference_answer": "Cold water is denser. Cold water sinks to the bottom of room temperature water. Hot water and less dense things float on room temperature water.",
+   "student_answer": "Because if the water floats, it is less dense. If it goes down to the bottom, it is denser.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.29.639.1",
+   "question": "Which is denser, hot water or cold water? How can you tell from lowering vials of hot water and cold water into a cup of room temperature water?",
+   "reference_answer": "Cold water is denser. Cold water sinks to the bottom of room temperature water. Hot water and less dense things float on room temperature water.",
+   "student_answer": "Cold. Because the more denser something is it goes to the bottom and that is what cold water does.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.29.648.1",
+   "question": "Which is denser, hot water or cold water? How can you tell from lowering vials of hot water and cold water into a cup of room temperature water?",
+   "reference_answer": "Cold water is denser. Cold water sinks to the bottom of room temperature water. Hot water and less dense things float on room temperature water.",
+   "student_answer": "Cold. Because the cold water sank in the cup and the hot water floated.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.30b.395.1",
+   "question": "Shanna stuck one end of a clear straw into a ball of clay. She filled the straw part way with water and marked the water level. She then placed it in the freezer. Which statement describes the level of the water (ice) in the straw after it froze? (Circle the one best answer.) A. The water level went down when the water froze. B. The water level stayed the same when the water froze. C. The water level went up when the water froze. Explain your answer.",
+   "reference_answer": "The level went up when the water froze because water expands when water freezes.",
+   "student_answer": "When water freezes it expands meaning there is more space between the molecules.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.30b.399.1",
+   "question": "Shanna stuck one end of a clear straw into a ball of clay. She filled the straw part way with water and marked the water level. She then placed it in the freezer. Which statement describes the level of the water (ice) in the straw after it froze? (Circle the one best answer.) A. The water level went down when the water froze. B. The water level stayed the same when the water froze. C. The water level went up when the water froze. Explain your answer.",
+   "reference_answer": "The level went up when the water froze because water expands when water freezes.",
+   "student_answer": "When water freezes it expands, so the water level went up.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.30b.416.1",
+   "question": "Shanna stuck one end of a clear straw into a ball of clay. She filled the straw part way with water and marked the water level. She then placed it in the freezer. Which statement describes the level of the water (ice) in the straw after it froze? (Circle the one best answer.) A. The water level went down when the water froze. B. The water level stayed the same when the water froze. C. The water level went up when the water froze. Explain your answer.",
+   "reference_answer": "The level went up when the water froze because water expands when water freezes.",
+   "student_answer": "Ice is more dense and takes up more room. When it froze, the ice needed more room so it went up.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.30b.419.1",
+   "question": "Shanna stuck one end of a clear straw into a ball of clay. She filled the straw part way with water and marked the water level. She then placed it in the freezer. Which statement describes the level of the water (ice) in the straw after it froze? (Circle the one best answer.) A. The water level went down when the water froze. B. The water level stayed the same when the water froze. C. The water level went up when the water froze. Explain your answer.",
+   "reference_answer": "The level went up when the water froze because water expands when water freezes.",
+   "student_answer": "Cold water expands when it freeze.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.30b.631.1",
+   "question": "Shanna stuck one end of a clear straw into a ball of clay. She filled the straw part way with water and marked the water level. She then placed it in the freezer. Which statement describes the level of the water (ice) in the straw after it froze? (Circle the one best answer.) A. The water level went down when the water froze. B. The water level stayed the same when the water froze. C. The water level went up when the water froze. Explain your answer.",
+   "reference_answer": "The level went up when the water froze because water expands when water freezes.",
+   "student_answer": "When it froze it expanded.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.31.266.1",
+   "question": "Maria weighed a small, wet sponge. It weighed 38 grams. She left the sponge on the balance. The next day, Jose found the sponge on the balance. It weighed 22 grams. Both students weighed the sponge accurately. Why were the masses different?",
+   "reference_answer": "Some water evaporated from the sponge between the time Maria weighed the sponge and the time Jose weighed the sponge.",
+   "student_answer": "The masses were different because some water evaporated overnight.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.31.395.1",
+   "question": "Maria weighed a small, wet sponge. It weighed 38 grams. She left the sponge on the balance. The next day, Jose found the sponge on the balance. It weighed 22 grams. Both students weighed the sponge accurately. Why were the masses different?",
+   "reference_answer": "Some water evaporated from the sponge between the time Maria weighed the sponge and the time Jose weighed the sponge.",
+   "student_answer": "Maria let the sponge sit and water from the sponge evaporated and took water out of the sponge and turned it into water vapor so the sponge got lighter since it had less mass.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.31.401.1",
+   "question": "Maria weighed a small, wet sponge. It weighed 38 grams. She left the sponge on the balance. The next day, Jose found the sponge on the balance. It weighed 22 grams. Both students weighed the sponge accurately. Why were the masses different?",
+   "reference_answer": "Some water evaporated from the sponge between the time Maria weighed the sponge and the time Jose weighed the sponge.",
+   "student_answer": "The water on the sponge was evaporated, so Jose's sponge was lighter than Maria's.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.31.541.1",
+   "question": "Maria weighed a small, wet sponge. It weighed 38 grams. She left the sponge on the balance. The next day, Jose found the sponge on the balance. It weighed 22 grams. Both students weighed the sponge accurately. Why were the masses different?",
+   "reference_answer": "Some water evaporated from the sponge between the time Maria weighed the sponge and the time Jose weighed the sponge.",
+   "student_answer": "Because the water in the sponge evaporated.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.31.630.1",
+   "question": "Maria weighed a small, wet sponge. It weighed 38 grams. She left the sponge on the balance. The next day, Jose found the sponge on the balance. It weighed 22 grams. Both students weighed the sponge accurately. Why were the masses different?",
+   "reference_answer": "Some water evaporated from the sponge between the time Maria weighed the sponge and the time Jose weighed the sponge.",
+   "student_answer": "They used different sponges.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.32b.257.1",
+   "question": "Ted poured the same amount of water into 2 small containers, X and Y. He placed them together where they would not be disturbed. After several days, all of the water had evaporated from one of the containers. The other container still had some water. Which container, X or Y, was empty? Explain why the water in that container evaporated more quickly than the water in the other container.",
+   "reference_answer": "Container X has more surface area or more water exposed to the air so the water evaporated faster.",
+   "student_answer": "The water in the X container had a larger surface area. Which let it evaporate more water faster.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.32b.461.1",
+   "question": "Ted poured the same amount of water into 2 small containers, X and Y. He placed them together where they would not be disturbed. After several days, all of the water had evaporated from one of the containers. The other container still had some water. Which container, X or Y, was empty? Explain why the water in that container evaporated more quickly than the water in the other container.",
+   "reference_answer": "Container X has more surface area or more water exposed to the air so the water evaporated faster.",
+   "student_answer": "X had a larger opening than the other cup.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.33b.174.1",
+   "question": "Joanna's glasses \"fogged up\" when she went into the bathroom after her sister finished her shower. What caused the \"fog\" to form on her glasses?",
+   "reference_answer": "The glasses were cooler than the water vapor in the bathroom.",
+   "student_answer": "Condensation caused the fog to form on her glasses. The warm air touched her cold glasses and turned back into water.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.33b.186.1",
+   "question": "Joanna's glasses \"fogged up\" when she went into the bathroom after her sister finished her shower. What caused the \"fog\" to form on her glasses?",
+   "reference_answer": "The glasses were cooler than the water vapor in the bathroom.",
+   "student_answer": "Well when water vapor cools it condenses. Her glasses were cool so water vapor condensed on them.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.33b.398.1",
+   "question": "Joanna's glasses \"fogged up\" when she went into the bathroom after her sister finished her shower. What caused the \"fog\" to form on her glasses?",
+   "reference_answer": "The glasses were cooler than the water vapor in the bathroom.",
+   "student_answer": "She had fog on her glasses because her glasses had a colder surface than the water vapor from the shower so they fogged up.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.33b.466.1",
+   "question": "Joanna's glasses \"fogged up\" when she went into the bathroom after her sister finished her shower. What caused the \"fog\" to form on her glasses?",
+   "reference_answer": "The glasses were cooler than the water vapor in the bathroom.",
+   "student_answer": "Her sister's shower made condensation so then the condensation formed on her glasses.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.33b.542.1",
+   "question": "Joanna's glasses \"fogged up\" when she went into the bathroom after her sister finished her shower. What caused the \"fog\" to form on her glasses?",
+   "reference_answer": "The glasses were cooler than the water vapor in the bathroom.",
+   "student_answer": "What caused the fog to get on her glasses was heat from the shower.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.33b.557.1",
+   "question": "Joanna's glasses \"fogged up\" when she went into the bathroom after her sister finished her shower. What caused the \"fog\" to form on her glasses?",
+   "reference_answer": "The glasses were cooler than the water vapor in the bathroom.",
+   "student_answer": "Because of water vapor.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.50b.504.1",
+   "question": "Pete put a marble in a cup of water as shown in the picture. What evidence indicates whether the marble is more or less dense than the water?",
+   "reference_answer": "The marble is on the bottom of the cup (under the water).",
+   "student_answer": "The marble is heavy so it will sink.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.50b.612.1",
+   "question": "Pete put a marble in a cup of water as shown in the picture. What evidence indicates whether the marble is more or less dense than the water?",
+   "reference_answer": "The marble is on the bottom of the cup (under the water).",
+   "student_answer": "The marble is more dense because it went down if it was less dense it will be floating on top of the water.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.50b.630.1",
+   "question": "Pete put a marble in a cup of water as shown in the picture. What evidence indicates whether the marble is more or less dense than the water?",
+   "reference_answer": "The marble is on the bottom of the cup (under the water).",
+   "student_answer": "It sank. If it was less dense it would float.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.51.193.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "The water on the floor had more surface area so it evaporated quickly.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.51.214.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "The reason the water on the floor evaporated is because it had more space to spread out and the cup did not.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.51.231.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "The water in the cup did evaporate, but the water on the floor that evaporated was in the air and went into you cup.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.51.262.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "Because the water on the floor was open to the air and had more surface area, but the cup had less surface area and was not really open to the air.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.51.279.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "First, the water on the floor had more surface area. So it evaporated quicker. Although the water in the cup had less surface area. So it evaporated slower.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.51.454.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "Because the floor had a open space for all the water to evaporate, but the cup did not.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.51.503.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "The reason why the water on the floor evaporated is because there was a lot of surface area. The water in the cup was still there because all the water was very close together and water does not evaporate when there is a lot.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.51.599.1",
+   "question": "Anna spilled half of her cup of water on the kitchen floor. The other half was still in the cup. When she came back hours later, all of the water on the floor had evaporated but most of the water in the cup was still there. (Anna knew that no one had wiped up the water on the floor.) Explain to Anna why the water on the floor had all evaporated but most of the water in the cup had not.",
+   "reference_answer": "The water on the floor had a much larger surface area. The water in the cup had a much smaller surface area.",
+   "student_answer": "When the water fell it moved around so it was thinner than the water in the cup it was so hot that heat made the water on the floor evaporated.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.52a.264.1",
+   "question": "Johnny drove to the store with his father one cold and rainy night. They had only driven a short distance when the windows \"fogged up\" on the inside. What was the \"fog\"?",
+   "reference_answer": "Condensed water vapor from the air inside the car.",
+   "student_answer": "It was water but it turned to a gas.",
+   "label_5way": "irrelevant",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.52a.294.1",
+   "question": "Johnny drove to the store with his father one cold and rainy night. They had only driven a short distance when the windows \"fogged up\" on the inside. What was the \"fog\"?",
+   "reference_answer": "Condensed water vapor from the air inside the car.",
+   "student_answer": "It is water in the air that hit the cold window shield that is condensation.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.52a.567.1",
+   "question": "Johnny drove to the store with his father one cold and rainy night. They had only driven a short distance when the windows \"fogged up\" on the inside. What was the \"fog\"?",
+   "reference_answer": "Condensed water vapor from the air inside the car.",
+   "student_answer": "It was condensation, little droplets of water.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.52a.604.1",
+   "question": "Johnny drove to the store with his father one cold and rainy night. They had only driven a short distance when the windows \"fogged up\" on the inside. What was the \"fog\"?",
+   "reference_answer": "Condensed water vapor from the air inside the car.",
+   "student_answer": "Evaporated water.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.52b.191.1",
+   "question": "Johnny drove to the store with his father one cold and rainy night. They had only driven a short distance when the windows \"fogged up\" on the inside. What was it about the windows that caused the \"fog\" to form on them?",
+   "reference_answer": "The windows were cooler than the water vapor in the air, causing the vapor to condense.",
+   "student_answer": "Water vapor caused the fog or condensation to form on the windows.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.52b.627.1",
+   "question": "Johnny drove to the store with his father one cold and rainy night. They had only driven a short distance when the windows \"fogged up\" on the inside. What was it about the windows that caused the \"fog\" to form on them?",
+   "reference_answer": "The windows were cooler than the water vapor in the air, causing the vapor to condense.",
+   "student_answer": "It was the coldest area possible for the condensation.",
+   "label_5way": "partially_correct_incomplete",
+   "label_2way": "incorrect"
+  },
+  {
+   "id": "WA.7b.186.1",
+   "question": "Look at the picture of a block of wood in a cup of water. What evidence indicates that the block of wood is less dense than the water?",
+   "reference_answer": "The block of wood floats because the wood is less dense than water.",
+   "student_answer": "The block is floating so it is less dense.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  },
+  {
+   "id": "WA.7b.365.1",
+   "question": "Look at the picture of a block of wood in a cup of water. What evidence indicates that the block of wood is less dense than the water?",
+   "reference_answer": "The block of wood floats because the wood is less dense than water.",
+   "student_answer": "Anything that floats to the top is less dense.",
+   "label_5way": "correct",
+   "label_2way": "correct"
+  }
+ ]
+}

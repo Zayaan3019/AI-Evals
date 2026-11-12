@@ -9,10 +9,12 @@ const WINDOWS = [
   { label: "Last 6 hours", hours: 6 },
   { label: "Last 24 hours", hours: 24 },
   { label: "Last 7 days", hours: 168 },
+  { label: "Last 30 days", hours: 720 },
+  { label: "Last 90 days", hours: 2160 },
 ];
 
 export function TracesPage() {
-  const [hours, setHours] = useState(24);
+  const [hours, setHours] = useState(720);
   const { data, isLoading, error } = useQuery({
     queryKey: ["traces", hours],
     queryFn: () => api.traces(hours),

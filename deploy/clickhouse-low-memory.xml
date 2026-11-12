@@ -1,0 +1,55 @@
+<clickhouse>
+    <!-- Small demo host: ClickHouse shares under 1 GB of RAM with Postgres,
+         Redis and the API. With the default configuration the kernel
+         OOM-killed clickhouse-server here (anon-rss 626 MB) and the API
+         reported "degraded" for three months. Everything below trades
+         throughput this demo does not need for a small, bounded footprint. -->
+    <max_server_memory_usage>360000000</max_server_memory_usage>
+    <mark_cache_size>33554432</mark_cache_size>
+    <index_mark_cache_size>16777216</index_mark_cache_size>
+    <uncompressed_cache_size>0</uncompressed_cache_size>
+    <index_uncompressed_cache_size>0</index_uncompressed_cache_size>
+    <mmap_cache_size>64</mmap_cache_size>
+    <compiled_expression_cache_size>8388608</compiled_expression_cache_size>
+    <max_concurrent_queries>8</max_concurrent_queries>
+    <max_connections>64</max_connections>
+    <mlock_executable>false</mlock_executable>
+
+    <!-- Fewer background threads: each pool thread holds allocator arenas. -->
+    <background_pool_size>2</background_pool_size>
+    <background_merges_mutations_concurrency_ratio>2</background_merges_mutations_concurrency_ratio>
+    <background_move_pool_size>1</background_move_pool_size>
+    <background_fetches_pool_size>1</background_fetches_pool_size>
+    <background_common_pool_size>2</background_common_pool_size>
+    <background_schedule_pool_size>8</background_schedule_pool_size>
+    <background_buffer_flush_schedule_pool_size>1</background_buffer_flush_schedule_pool_size>
+    <background_message_broker_schedule_pool_size>1</background_message_broker_schedule_pool_size>
+    <background_distributed_schedule_pool_size>1</background_distributed_schedule_pool_size>
+    <merge_tree>
+        <!-- Must not exceed background_pool_size * concurrency ratio, or tables refuse to load. -->
+        <number_of_free_entries_in_pool_to_lower_max_size_of_merge>2</number_of_free_entries_in_pool_to_lower_max_size_of_merge>
+        <number_of_free_entries_in_pool_to_execute_mutation>2</number_of_free_entries_in_pool_to_execute_mutation>
+        <number_of_free_entries_in_pool_to_execute_optimize_entire_partition>2</number_of_free_entries_in_pool_to_execute_optimize_entire_partition>
+        <merge_max_block_size>1024</merge_max_block_size>
+        <max_bytes_to_merge_at_max_space_in_pool>1073741824</max_bytes_to_merge_at_max_space_in_pool>
+    </merge_tree>
+
+    <!-- Internal telemetry tables cost memory and disk, and nothing reads them here. -->
+    <query_log remove="1"/>
+    <query_thread_log remove="1"/>
+    <query_views_log remove="1"/>
+    <trace_log remove="1"/>
+    <metric_log remove="1"/>
+    <asynchronous_metric_log remove="1"/>
+    <part_log remove="1"/>
+    <text_log remove="1"/>
+    <processors_profile_log remove="1"/>
+    <opentelemetry_span_log remove="1"/>
+    <session_log remove="1"/>
+    <asynchronous_insert_log remove="1"/>
+    <backup_log remove="1"/>
+    <blob_storage_log remove="1"/>
+    <error_log remove="1"/>
+    <query_metric_log remove="1"/>
+    <latency_log remove="1"/>
+</clickhouse>

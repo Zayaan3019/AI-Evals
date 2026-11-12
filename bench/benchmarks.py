@@ -313,15 +313,21 @@ def bench_evaluators(iterations: int = 2000) -> list[Result]:
 # ---------------------------------------------------------------------------
 
 
-def bench_bootstrap(pairs: int = 200, resamples: int = 10_000) -> Result:
-    """Cost of one paired bootstrap, which the gate runs per evaluator."""
-    import random
+def bench_bootstrap(resamples: int = 10_000) -> Result:
+    """Cost of one paired bootstrap, which the gate runs per evaluator.
 
+    Timed on real annotations rather than generated numbers: the SciEntsBank
+    expert labels for 150 student answers, scored two ways by the dataset's
+    own schemes (2-way correct/incorrect against 5-way with partial credit).
+    """
+    from agentlens_platform.examples.benchmark import scientsbank_items
     from agentlens_platform.stats import paired_bootstrap
 
-    rng = random.Random(1)
-    baseline = [rng.random() for _ in range(pairs)]
-    candidate = [min(1.0, b + 0.05) for b in baseline]
+    partial = {"correct": 1.0, "partially_correct_incomplete": 0.5}
+    items = scientsbank_items()
+    baseline = [1.0 if i["label_2way"] == "correct" else 0.0 for i in items]
+    candidate = [partial.get(i["label_5way"], 0.0) for i in items]
+    pairs = len(items)
 
     started = time.perf_counter()
     paired_bootstrap(baseline, candidate, resamples=resamples)

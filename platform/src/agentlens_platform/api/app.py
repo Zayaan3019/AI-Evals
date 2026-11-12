@@ -14,16 +14,16 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated, Any, AsyncIterator
 
 import grpc
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import FastAPI, HTTPException, Query
 
-from ..auth import AuthenticatedTenant, authenticate
 from ..config import Settings, get_settings
 from ..db.clickhouse import build_client, ensure_schema
-from ..db.postgres import dispose_engine, get_session
+from ..db.postgres import dispose_engine
 from ..ingest.otlp import serve_otlp
 from ..ingest.writer import SpanWriter
 from ..drift import detect_drift, model_pareto
+from .deps import ReaderDep, TenantDep, current_reader, current_tenant  # noqa: F401
+from .evals import router as evals_router
 from ..queries import (
     TimeWindow,
     count_spans,
@@ -101,26 +101,10 @@ app = FastAPI(
 )
 
 
-# ---------------------------------------------------------------------------
-# Auth dependency
-# ---------------------------------------------------------------------------
-
-
-async def current_tenant(
-    session: Annotated[AsyncSession, Depends(get_session)],
-    x_agentlens_api_key: Annotated[str | None, Header()] = None,
-) -> AuthenticatedTenant:
-    tenant = await authenticate(session, x_agentlens_api_key)
-    if tenant is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="invalid or missing API key",
-            headers={"WWW-Authenticate": "ApiKey"},
-        )
-    return tenant
-
-
-TenantDep = Annotated[AuthenticatedTenant, Depends(current_tenant)]
+# Auth lives in .deps: TenantDep needs a valid key, ReaderDep also admits the
+# public read-only tenant. Every GET below takes ReaderDep; the one
+# state-changing handler (POST /v1/flush) keeps TenantDep.
+app.include_router(evals_router)
 
 
 def _window(hours: float) -> TimeWindow:
@@ -176,7 +160,7 @@ async def health() -> dict[str, Any]:
 
 @app.get("/v1/traces", tags=["traces"])
 async def get_traces(
-    tenant: TenantDep,
+    tenant: ReaderDep,
     hours: Annotated[float, Query(gt=0, le=24 * 90)] = 24,
     service: str | None = None,
     limit: Annotated[int, Query(ge=1, le=500)] = 50,
@@ -195,7 +179,7 @@ async def get_traces(
 
 
 @app.get("/v1/traces/{trace_id}", tags=["traces"])
-async def get_trace(tenant: TenantDep, trace_id: str) -> dict[str, Any]:
+async def get_trace(tenant: ReaderDep, trace_id: str) -> dict[str, Any]:
     spans = fetch_trace(
         state.clickhouse,
         database=state.settings.clickhouse_database,
@@ -214,7 +198,7 @@ async def get_trace(tenant: TenantDep, trace_id: str) -> dict[str, Any]:
 
 @app.get("/v1/analytics/models", tags=["analytics"])
 async def get_model_usage(
-    tenant: TenantDep,
+    tenant: ReaderDep,
     hours: Annotated[float, Query(gt=0, le=24 * 90)] = 24,
 ) -> dict[str, Any]:
     return {
@@ -229,7 +213,7 @@ async def get_model_usage(
 
 @app.get("/v1/analytics/operations", tags=["analytics"])
 async def get_operation_latency(
-    tenant: TenantDep,
+    tenant: ReaderDep,
     hours: Annotated[float, Query(gt=0, le=24 * 90)] = 24,
 ) -> dict[str, Any]:
     return {
@@ -244,7 +228,7 @@ async def get_operation_latency(
 
 @app.get("/v1/analytics/drift", tags=["analytics"])
 async def get_drift(
-    tenant: TenantDep,
+    tenant: ReaderDep,
     metric: Annotated[str, Query()] = "latency_ms",
     current_hours: Annotated[float, Query(gt=0, le=24 * 30)] = 1,
     reference_hours: Annotated[float, Query(gt=0, le=24 * 90)] = 24,
@@ -300,7 +284,7 @@ async def get_drift(
 
 @app.get("/v1/analytics/pareto", tags=["analytics"])
 async def get_pareto(
-    tenant: TenantDep,
+    tenant: ReaderDep,
     hours: Annotated[float, Query(gt=0, le=24 * 90)] = 24,
 ) -> dict[str, Any]:
     """Cost / quality / latency frontier across models.
@@ -335,7 +319,7 @@ async def get_pareto(
 
 
 @app.get("/v1/stats", tags=["ops"])
-async def get_stats(tenant: TenantDep) -> dict[str, Any]:
+async def get_stats(tenant: ReaderDep) -> dict[str, Any]:
     """Ingestion counters plus this tenant's stored span count."""
     return {
         "tenant": tenant.tenant_slug,

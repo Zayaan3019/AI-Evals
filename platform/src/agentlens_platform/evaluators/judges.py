@@ -1,6 +1,6 @@
 """Backends for model-graded evaluation.
 
-Two real providers, no stubs:
+Three real providers, no stubs:
 
 * **Anthropic** over the public Messages API, used when ``ANTHROPIC_API_KEY`` is
   present in the environment. The key is never read from config or stored in the
@@ -8,6 +8,15 @@ Two real providers, no stubs:
   ``config_hash`` and, from there, into query results.
 * **Ollama** over its local HTTP API, which needs no credential and is what the
   dogfooding runs on this machine use.
+* **Groq** over its OpenAI-compatible chat completions API, used when
+  ``GROQ_API_KEY`` is present.
+
+A judge can also be wrapped in a :class:`ReplayJudge`, which records each real
+response to a cassette file and replays it afterwards. That is not a stub: the
+recorded text is what the real model said, the prompt is part of the key, and a
+prompt that was never recorded fails as "judge unavailable" rather than being
+answered by something else. It exists so a demo or a CI run can reuse real
+judgements without holding a model credential.
 
 A judge call is a network call to a non-deterministic system, so everything here
 is built around that being true: bounded retries, an explicit timeout, and
@@ -16,6 +25,7 @@ failures surfaced as failures rather than as a zero score.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -189,6 +199,209 @@ class OllamaJudge:
         )
 
 
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+
+def _default_reasoning(model: str) -> str | None:
+    """Lowest reasoning setting each model family accepts on Groq."""
+    if model.startswith("openai/gpt-oss"):
+        return "low"
+    if model.startswith("qwen/qwen3"):
+        return "none"
+    return None
+
+
+class GroqJudge:
+    """Judge backed by Groq's OpenAI-compatible chat completions API."""
+
+    def __init__(
+        self,
+        model: str,
+        *,
+        api_key: str | None = None,
+        timeout: float = 60.0,
+        max_retries: int = 6,
+        base_url: str = GROQ_API_URL,
+        reasoning_effort: str | None = None,
+    ) -> None:
+        self.model = model
+        self._api_key = api_key or os.environ.get("GROQ_API_KEY")
+        self._timeout = timeout
+        self._max_retries = max_retries
+        self._base_url = base_url
+        # Reasoning models spend output tokens thinking before they answer. With
+        # a judge-sized max_tokens that can leave the visible answer empty, and
+        # it multiplies cost. The default keeps reasoning minimal per family.
+        self._reasoning_effort = (
+            reasoning_effort if reasoning_effort is not None else _default_reasoning(model)
+        )
+
+    def complete(
+        self, prompt: str, *, system: str, max_tokens: int, temperature: float
+    ) -> JudgeResponse:
+        if not self._api_key:
+            raise JudgeUnavailable("GROQ_API_KEY is not set")
+
+        payload = {
+            "model": self.model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": prompt},
+            ],
+        }
+        if self._reasoning_effort:
+            payload["reasoning_effort"] = self._reasoning_effort
+        headers = {
+            "authorization": f"Bearer {self._api_key}",
+            "content-type": "application/json",
+        }
+
+        last_error: Exception | None = None
+        for attempt in range(self._max_retries + 1):
+            started = time.perf_counter()
+            try:
+                response = httpx.post(
+                    self._base_url, json=payload, headers=headers, timeout=self._timeout
+                )
+            except httpx.HTTPError as exc:
+                last_error = exc
+                time.sleep(min(2.0**attempt, 20.0))
+                continue
+
+            if response.status_code == 429 or response.status_code >= 500:
+                # Honour the back-off the server asks for when it gives one. A
+                # guessed delay shorter than Retry-After only burns the retry budget.
+                last_error = RuntimeError(f"HTTP {response.status_code}")
+                try:
+                    delay = float(response.headers.get("retry-after", ""))
+                except ValueError:
+                    delay = 2.0**attempt
+                time.sleep(min(max(delay, 1.0), 30.0))
+                continue
+            if response.status_code != 200:
+                raise JudgeUnavailable(
+                    f"groq returned HTTP {response.status_code}: {response.text[:200]}"
+                )
+
+            body = response.json()
+            choices = body.get("choices") or []
+            if not choices:
+                raise JudgeUnavailable("groq returned no choices")
+            usage = body.get("usage") or {}
+            return JudgeResponse(
+                text=str(choices[0].get("message", {}).get("content") or ""),
+                input_tokens=usage.get("prompt_tokens"),
+                output_tokens=usage.get("completion_tokens"),
+                latency_ms=(time.perf_counter() - started) * 1000,
+                model=str(body.get("model") or self.model),
+            )
+
+        raise JudgeUnavailable(f"groq unreachable after retries: {last_error}")
+
+
+class ReplayJudge:
+    """Record a real judge once, then replay its responses.
+
+    The cassette key is a hash of everything that determines the response:
+    model, system prompt, user prompt, token limit and temperature. A changed
+    prompt is therefore a cache miss, never a stale hit -- the same property
+    ``config_hash`` protects elsewhere.
+
+    On a miss the wrapped backend is called if one is available, and its answer
+    is appended to the cassette. With no backend, a miss raises
+    :class:`JudgeUnavailable`, which the evaluator records as an error rather
+    than a score.
+    """
+
+    def __init__(self, model: str, cassette_path: str, live: JudgeBackend | None = None) -> None:
+        self.model = model
+        self._path = cassette_path
+        self._live = live
+        self._entries: dict[str, dict[str, Any]] = {}
+        if os.path.exists(cassette_path):
+            with open(cassette_path, encoding="utf-8") as handle:
+                self._entries = json.load(handle).get("entries", {})
+
+    def _key(self, prompt: str, system: str, max_tokens: int, temperature: float) -> str:
+        material = json.dumps(
+            [self.model, system, prompt, max_tokens, temperature], ensure_ascii=False
+        )
+        return hashlib.sha256(material.encode("utf-8")).hexdigest()
+
+    def complete(
+        self, prompt: str, *, system: str, max_tokens: int, temperature: float
+    ) -> JudgeResponse:
+        key = self._key(prompt, system, max_tokens, temperature)
+        hit = self._entries.get(key)
+        if hit is not None:
+            return JudgeResponse(
+                text=hit["text"],
+                input_tokens=hit.get("input_tokens"),
+                output_tokens=hit.get("output_tokens"),
+                latency_ms=float(hit.get("latency_ms", 0.0)),
+                model=hit.get("model", self.model),
+            )
+        if self._live is None:
+            raise JudgeUnavailable(
+                f"no recorded response for this prompt in {self._path} and no live judge configured"
+            )
+        response = self._live.complete(
+            prompt, system=system, max_tokens=max_tokens, temperature=temperature
+        )
+        self._entries[key] = {
+            "text": response.text,
+            "input_tokens": response.input_tokens,
+            "output_tokens": response.output_tokens,
+            "latency_ms": round(response.latency_ms, 2),
+            "model": response.model,
+        }
+        try:
+            self._save()
+        except OSError as exc:
+            # The live response is valid whatever happens to the file. Losing
+            # a grade because the cassette could not be written would turn a
+            # recording problem into an evaluation error. The entry stays in
+            # memory and is written with the next successful save.
+            logger.warning("could not write judge cassette %s: %s", self._path, exc)
+        return response
+
+    def _save(self) -> None:
+        # Re-read before writing: two judge models share one cassette file, and
+        # each ReplayJudge instance only knows the entries it loaded or added.
+        merged: dict[str, dict[str, Any]] = {}
+        if os.path.exists(self._path):
+            with open(self._path, encoding="utf-8") as handle:
+                merged = json.load(handle).get("entries", {})
+        merged.update(self._entries)
+        self._entries = merged
+        tmp = f"{self._path}.tmp"
+        with open(tmp, "w", encoding="utf-8") as handle:
+            json.dump(
+                {
+                    "note": "Real judge responses, recorded once and replayed. Keyed by a "
+                    "hash of model, system prompt, prompt, max_tokens and temperature.",
+                    "entries": self._entries,
+                },
+                handle,
+                ensure_ascii=False,
+                indent=1,
+                sort_keys=True,
+            )
+        # On Windows a reader (an editor, an indexer, antivirus) can hold the
+        # target open for a moment and os.replace then fails with a sharing
+        # violation. Retry briefly before giving up.
+        for attempt in range(5):
+            try:
+                os.replace(tmp, self._path)
+                return
+            except PermissionError:
+                if attempt == 4:
+                    raise
+                time.sleep(0.2 * (attempt + 1))
+
+
 def ollama_available(base_url: str | None = None) -> bool:
     """Whether a local Ollama is reachable right now."""
     url = (base_url or os.environ.get("OLLAMA_HOST") or DEFAULT_OLLAMA_URL).rstrip("/")
@@ -207,10 +420,22 @@ def build_judge(provider: str, model: str, **kwargs: Any) -> JudgeBackend:
     prevent.
     """
     if provider == "anthropic":
-        return AnthropicJudge(model, **kwargs)
-    if provider == "ollama":
-        return OllamaJudge(model, **kwargs)
-    raise JudgeUnavailable(f"unknown judge provider {provider!r}")
+        backend: JudgeBackend = AnthropicJudge(model, **kwargs)
+    elif provider == "ollama":
+        backend = OllamaJudge(model, **kwargs)
+    elif provider == "groq":
+        backend = GroqJudge(model, **kwargs)
+    else:
+        raise JudgeUnavailable(f"unknown judge provider {provider!r}")
+
+    # Optional record/replay. The provider and model stay exactly what the
+    # evaluator config says they are, so ``config_hash`` still names the real
+    # judge; the cassette only decides whether the network is used.
+    cassette = os.environ.get("AGENTLENS_JUDGE_CASSETTE")
+    if cassette:
+        record = os.environ.get("AGENTLENS_JUDGE_RECORD", "").strip().lower() in {"1", "true", "yes"}
+        return ReplayJudge(model, cassette, live=backend if record else None)
+    return backend
 
 
 def extract_json_object(text: str) -> dict[str, Any]:
