@@ -46,6 +46,12 @@ class Settings(BaseSettings):
     clickhouse_password: str = "agentlens"
     clickhouse_database: str = "agentlens"
     clickhouse_secure: bool = False
+    #: The API reads spans as this user, which a ClickHouse row policy limits
+    #: to one tenant per query (see db/clickhouse.py). The password defaults to
+    #: one derived from clickhouse_password, so a deployment that only sets the
+    #: admin password still gets a non-guessable reader password.
+    clickhouse_reader_user: str = "agentlens_reader"
+    clickhouse_reader_password: str | None = None
 
     # -- Redis: cache, rate limits, idempotency ---------------------------
     redis_url: str = "redis://localhost:56380/0"
@@ -80,6 +86,16 @@ class Settings(BaseSettings):
     #: not a credential. Anonymous access is read-only by construction -- it is
     #: honoured only by GET handlers, and OTLP ingestion never consults it.
     public_read_tenant: str | None = None
+
+    @property
+    def clickhouse_reader_secret(self) -> str:
+        if self.clickhouse_reader_password:
+            return self.clickhouse_reader_password
+        import hashlib
+
+        return hashlib.sha256(
+            f"agentlens-reader:{self.clickhouse_password}".encode()
+        ).hexdigest()
 
     @property
     def clickhouse_url(self) -> str:

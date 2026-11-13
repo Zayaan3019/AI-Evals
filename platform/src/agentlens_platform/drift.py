@@ -27,7 +27,7 @@ from typing import Any, Sequence
 
 from clickhouse_connect.driver.client import Client
 
-from .db.clickhouse import SPANS_TABLE
+from .db.clickhouse import tenant_query, SPANS_TABLE
 from .queries import TimeWindow, _TIME_PREDICATE
 
 #: Conventional PSI interpretation from the credit-risk literature, where the
@@ -261,7 +261,7 @@ def sample_metric(
         conditions.append("gen_ai_request_model = %(model)s")
         parameters["model"] = model
 
-    result = client.query(
+    result = tenant_query(client, 
         f"""
         SELECT toFloat64({DRIFT_METRICS[metric]}) AS value
         FROM {database}.{SPANS_TABLE}
@@ -367,7 +367,7 @@ def model_pareto(
     evaluator, which lives in the offline path. It is included because latency
     and cost alone would make the cheapest broken model look optimal.
     """
-    result = client.query(
+    result = tenant_query(client, 
         f"""
         SELECT
             gen_ai_request_model                                AS model,

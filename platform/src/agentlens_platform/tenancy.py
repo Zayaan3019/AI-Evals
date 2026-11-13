@@ -33,9 +33,12 @@ A non-superuser application role
     it. With a connection pool, a plain ``SET`` is a cross-tenant data leak with
     extra steps.
 
-ClickHouse has no equivalent, which is why span isolation there is a predicate
-on every query plus a test that asserts it (``test_storage.py``). The asymmetry
-is real and is stated rather than papered over.
+ClickHouse enforces the same rule with a row policy on the span table: the
+API reads as a restricted user whose policy is ``tenant_id =
+getSetting('SQL_agentlens_tenant')``, set per query (db/clickhouse.py). An
+earlier version of this note said ClickHouse had no equivalent and relied on
+the predicate alone; it does, and the predicate is now the fast path rather
+than the only guard.
 """
 
 from __future__ import annotations

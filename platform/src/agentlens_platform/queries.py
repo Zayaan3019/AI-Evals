@@ -15,7 +15,7 @@ from typing import Any
 
 from clickhouse_connect.driver.client import Client
 
-from .db.clickhouse import SPANS_TABLE
+from .db.clickhouse import tenant_query, SPANS_TABLE
 
 #: Columns returned when reading spans back for display or tree reconstruction.
 _SPAN_SELECT = """
@@ -111,7 +111,7 @@ def fetch_trace(
     sort order cannot serve it, and without the skip index this would read every
     partition in the retention window.
     """
-    result = client.query(
+    result = tenant_query(client, 
         f"SELECT {_SPAN_SELECT} FROM {database}.{SPANS_TABLE} "
         "WHERE tenant_id = %(tenant)s AND trace_id = %(trace_id)s "
         "ORDER BY start_time ASC",
@@ -149,7 +149,7 @@ def list_traces(
         parameters["service"] = service_name
 
     where = " AND ".join(conditions)
-    result = client.query(
+    result = tenant_query(client, 
         f"""
         SELECT
             trace_id,
@@ -196,7 +196,7 @@ def model_usage_summary(
     holding every value, which defeats the point of aggregating server-side.
     t-digest is accurate in the tails, which is where latency questions live.
     """
-    result = client.query(
+    result = tenant_query(client, 
         f"""
         SELECT
             gen_ai_request_model                                AS model,
@@ -230,7 +230,7 @@ def operation_latency_summary(
     client: Client, *, database: str, tenant_slug: str, window: TimeWindow
 ) -> list[dict[str, Any]]:
     """Latency and error rate per operation type."""
-    result = client.query(
+    result = tenant_query(client, 
         f"""
         SELECT
             gen_ai_operation_name                               AS operation,
@@ -257,7 +257,7 @@ def operation_latency_summary(
 
 def count_spans(client: Client, *, database: str, tenant_slug: str) -> int:
     """Total stored spans for a tenant. Used by health checks and tests."""
-    result = client.query(
+    result = tenant_query(client, 
         f"SELECT count() FROM {database}.{SPANS_TABLE} WHERE tenant_id = %(tenant)s",
         parameters={"tenant": tenant_slug},
     )

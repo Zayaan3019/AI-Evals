@@ -17,7 +17,7 @@ import grpc
 from fastapi import FastAPI, HTTPException, Query
 
 from ..config import Settings, get_settings
-from ..db.clickhouse import build_client, ensure_schema
+from ..db.clickhouse import build_client, ensure_reader, ensure_schema
 from ..db.postgres import dispose_engine
 from ..ingest.otlp import serve_otlp
 from ..ingest.writer import SpanWriter
@@ -41,8 +41,12 @@ class ServiceState:
 
     def __init__(self) -> None:
         self.settings: Settings = get_settings()
-        #: Read path, used by the API handlers on the event loop.
+        #: Read path, used by the API handlers on the event loop. Connects as
+        #: the tenant-restricted reader, so a handler cannot read another
+        #: tenant's spans even through a query that forgets its predicate.
         self.clickhouse: Any = None
+        #: Admin connection: schema, reader/policy setup and health checks.
+        self.clickhouse_admin: Any = None
         #: Write path, used only by the ingest writer from a worker thread.
         #: Deliberately a second client: one client is one HTTP connection pool,
         #: and sharing it would put bulk inserts and interactive reads in
@@ -60,8 +64,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     state.settings = settings
 
-    state.clickhouse = build_client(settings)
-    ensure_schema(state.clickhouse, settings.clickhouse_database, settings.span_retention_days)
+    state.clickhouse_admin = build_client(settings)
+    ensure_schema(state.clickhouse_admin, settings.clickhouse_database, settings.span_retention_days)
+    ensure_reader(
+        state.clickhouse_admin,
+        settings.clickhouse_database,
+        reader_user=settings.clickhouse_reader_user,
+        reader_password=settings.clickhouse_reader_secret,
+        admin_user=settings.clickhouse_user,
+    )
+    state.clickhouse = build_client(settings, reader=True)
 
     state.clickhouse_ingest = build_client(settings)
     state.writer = SpanWriter(
@@ -90,6 +102,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             state.clickhouse_ingest.close()
         if state.clickhouse is not None:
             state.clickhouse.close()
+        if state.clickhouse_admin is not None:
+            state.clickhouse_admin.close()
         await dispose_engine()
 
 

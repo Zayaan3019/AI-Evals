@@ -62,7 +62,7 @@ nested spans.
 | Overhead budget < 2 ms p99 | measured | `tests/test_overhead.py` (3 tests) |
 | Decorators + context managers, sync and async | `sdk/src/agentlens/api.py` | `tests/test_api.py` (30 tests) |
 
-**150 SDK tests + 279 platform tests = 429 passing (plus 1 POSIX-only skip).** Real output below.
+**150 SDK tests + 287 platform tests = 437 passing (plus 1 POSIX-only skip).** Real output below.
 
 ---
 
@@ -458,9 +458,23 @@ Postgres to return nothing. It also asserts that an unset context yields zero
 rows rather than everything, that `SET LOCAL` does not leak across pooled
 connections, and that the app role cannot disable its own policies.
 
-ClickHouse has no RLS equivalent. Span isolation there is a predicate on every
-query plus a test that asserts it. The asymmetry is real and is stated, not
-papered over.
+ClickHouse gets the same guarantee from a **row policy**. The API reads spans
+as a separate user, `agentlens_reader`, which can only `SELECT` the span table
+and whose policy is `tenant_id = getSetting('SQL_agentlens_tenant')`. Every read
+binds the tenant in the query's own `SETTINGS` clause, from the same parameter
+its `WHERE tenant_id = ...` uses, so the predicate (which the sort key needs for
+speed) and the policy (which makes isolation hold without it) cannot disagree.
+`test_clickhouse_row_policy.py` checks it the same adversarial way: a query with
+no tenant predicate sees one tenant; naming another tenant returns nothing; no
+tenant bound returns no rows (the reader's default for the setting is `''`); the
+reader can neither insert nor drop the policy.
+
+One ClickHouse rule makes this easy to get wrong: once **any** row policy exists
+on a table, users with no policy see **zero** rows. The admin user (schema and
+ingest) therefore has an explicit allow-all policy, the equivalent of the
+Postgres table owner, and a test pins it, because losing it fails silently.
+(An earlier version of this README said ClickHouse had no RLS equivalent and
+relied on the predicate alone. It does.)
 
 ### Phase 8 — frontend (`frontend/`)
 
@@ -633,7 +647,7 @@ $ cd platform && ../.venv/Scripts/python.exe -m pytest tests/ -q
 ........................................................................ [ 51%]
 ....................................................................s... [ 77%]
 ................................................................         [100%]
-279 passed, 1 skipped in 239.28s (0:03:59)
+287 passed, 1 skipped in 210.63s (0:03:30)
 ```
 
 The platform suite requires the docker stack and **errors rather than skips**
@@ -738,7 +752,7 @@ platform/                     package `agentlens_platform` (Phases 2-7)
     api/app.py                FastAPI read + analytics endpoints
     ci.py                     CI entrypoint, distinct exit code per verdict
   alembic/                    migrations (incl. RLS policies, app role)
-  tests/                      279 tests (+1 POSIX-only skip), real Postgres + ClickHouse
+  tests/                      287 tests (+1 POSIX-only skip), real Postgres + ClickHouse
 
 frontend/                     React + Vite + TanStack Query UI (Phase 8)
 bench/                        benchmark harness (Phase 10)

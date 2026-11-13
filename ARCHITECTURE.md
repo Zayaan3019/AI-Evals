@@ -55,7 +55,9 @@ guarantees ClickHouse deliberately does not provide:
   correcting a human label. ClickHouse mutations are asynchronous background
   rewrites, not row updates.
 * **Row-Level Security.** Tenant isolation is a database guarantee in Postgres
-  (Phase 7 requirement). ClickHouse has no equivalent.
+  (Phase 7 requirement). ClickHouse enforces it too, with a row policy on the
+  span table for the API's read-only user (`db/clickhouse.py`), but its
+  policies are SELECT-only filters; Postgres also guards writes and updates.
 * **Uniqueness.** `MergeTree` does not enforce unique constraints; its
   `ReplacingMergeTree` deduplicates eventually. Eval-case identity cannot be
   eventually consistent.

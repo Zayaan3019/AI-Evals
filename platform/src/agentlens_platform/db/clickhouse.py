@@ -37,6 +37,19 @@ Materialised GenAI columns
     insert time rather than read out of the attribute map at query time. Map
     lookups cannot use the sparse index and cost a scan of the whole map column;
     a typed column can be filtered and aggregated directly.
+Tenant isolation: a row policy, not just a predicate
+    The API reads spans as a separate user (``agentlens_reader``) that a row
+    policy restricts to ``tenant_id = getSetting('SQL_agentlens_tenant')``.
+    Every read passes the tenant as that per-query setting (see
+    :func:`tenant_query`), so a query that forgets its ``WHERE tenant_id``
+    still returns only the caller's rows, and a query sent with no tenant at
+    all returns none -- the reader's default for the setting is ''. The same
+    guarantee Postgres RLS gives the relational side (tenancy.py).
+
+    One ClickHouse rule makes this subtle: once ANY row policy exists on a
+    table, users without a policy see no rows at all. The admin user (schema,
+    ingest) therefore gets an explicit allow-all policy; it is the equivalent
+    of the Postgres table owner and is never used by request handlers.
 """
 
 from __future__ import annotations
@@ -52,6 +65,12 @@ from ..config import Settings, get_settings
 logger = logging.getLogger(__name__)
 
 SPANS_TABLE = "spans"
+
+#: Custom setting the row policy reads. ClickHouse accepts unknown settings
+#: only under a configured prefix; ``SQL_`` is the server default.
+TENANT_SETTING = "SQL_agentlens_tenant"
+TENANT_POLICY = "agentlens_tenant_isolation"
+ADMIN_POLICY = "agentlens_admin_all"
 
 #: Columns written on every insert, in order. The writer builds rows positionally
 #: against this tuple, so the order here is the wire contract between
@@ -179,7 +198,12 @@ def spans_ddl(database: str, retention_days: int) -> str:
     """
 
 
-def build_client(settings: Settings | None = None, *, database: str | None = None) -> Client:
+def build_client(
+    settings: Settings | None = None,
+    *,
+    database: str | None = None,
+    reader: bool = False,
+) -> Client:
     """Connect to ClickHouse.
 
     ``database`` overrides the configured one so tests can target a scratch
@@ -196,13 +220,16 @@ def build_client(settings: Settings | None = None, *, database: str | None = Non
 
     Concurrency still wants separate clients per role (see api/app.py), because
     a shared client also shares one HTTP connection pool.
+
+    ``reader=True`` connects as the tenant-restricted reader instead of the
+    admin user; that is the client request handlers must use.
     """
     settings = settings or get_settings()
     return clickhouse_connect.get_client(
         host=settings.clickhouse_host,
         port=settings.clickhouse_port,
-        username=settings.clickhouse_user,
-        password=settings.clickhouse_password,
+        username=settings.clickhouse_reader_user if reader else settings.clickhouse_user,
+        password=settings.clickhouse_reader_secret if reader else settings.clickhouse_password,
         database=database or settings.clickhouse_database,
         secure=settings.clickhouse_secure,
         autogenerate_session_id=False,
@@ -218,6 +245,67 @@ def ensure_schema(client: Client, database: str, retention_days: int) -> None:
     client.command(f"CREATE DATABASE IF NOT EXISTS {database}")
     client.command(spans_ddl(database, retention_days))
     logger.info("clickhouse schema ready: %s.%s", database, SPANS_TABLE)
+
+
+def ensure_reader(
+    client: Client,
+    database: str,
+    *,
+    reader_user: str,
+    reader_password: str,
+    admin_user: str,
+) -> None:
+    """Create the tenant-restricted reader and the row policies. Idempotent.
+
+    Run as the admin user (it needs access management). The password is reset
+    on every start so a rotated secret takes effect without manual steps.
+    """
+    for name in (reader_user, admin_user):
+        if not name.replace("_", "").isalnum():
+            raise ValueError(f"unsafe ClickHouse user name {name!r}")
+    pw = reader_password.replace("\\", "\\\\").replace("'", "\\'")
+    client.command(
+        f"CREATE USER IF NOT EXISTS {reader_user} IDENTIFIED WITH sha256_password BY '{pw}' "
+        f"SETTINGS {TENANT_SETTING} = ''"
+    )
+    client.command(f"ALTER USER {reader_user} IDENTIFIED WITH sha256_password BY '{pw}'")
+    client.command(f"GRANT SELECT ON {database}.{SPANS_TABLE} TO {reader_user}")
+    client.command(
+        f"CREATE ROW POLICY OR REPLACE {TENANT_POLICY} ON {database}.{SPANS_TABLE} "
+        f"FOR SELECT USING tenant_id = getSetting('{TENANT_SETTING}') TO {reader_user}"
+    )
+    client.command(
+        f"CREATE ROW POLICY OR REPLACE {ADMIN_POLICY} ON {database}.{SPANS_TABLE} "
+        f"FOR SELECT USING 1 TO {admin_user}"
+    )
+    logger.info("clickhouse reader %s restricted by row policy on %s.%s",
+                reader_user, database, SPANS_TABLE)
+
+
+def drop_row_policies(client: Client, database: str) -> None:
+    """Remove this database's policies (tests drop scratch databases)."""
+    for policy in (TENANT_POLICY, ADMIN_POLICY):
+        client.command(f"DROP ROW POLICY IF EXISTS {policy} ON {database}.{SPANS_TABLE}")
+
+
+def tenant_query(client: Client, sql: str, *, parameters: dict[str, Any]) -> Any:
+    """Run a read with the tenant bound for the row policy.
+
+    The tenant comes from the same ``parameters["tenant"]`` the query's own
+    ``WHERE tenant_id = %(tenant)s`` uses, so the predicate (which the sort
+    key needs for speed) and the policy (which makes isolation hold even
+    without the predicate) cannot disagree.
+    """
+    tenant = parameters.get("tenant")
+    if not tenant:
+        raise ValueError("tenant_query needs parameters['tenant']")
+    # In the query's own SETTINGS clause rather than the driver's settings=
+    # argument: clickhouse-connect validates settings against the server's
+    # list on the client side and rejects custom SQL_* settings outright.
+    # The value is bound like any other parameter (escaped by the driver).
+    return client.query(
+        f"{sql.rstrip()} SETTINGS {TENANT_SETTING} = %(tenant)s", parameters=parameters
+    )
 
 
 def insert_spans(client: Client, rows: Sequence[Sequence[Any]], *, database: str) -> None:

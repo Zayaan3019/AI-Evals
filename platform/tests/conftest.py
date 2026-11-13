@@ -21,7 +21,12 @@ from sqlalchemy import text
 
 from agentlens_platform.auth import generate_api_key
 from agentlens_platform.config import Settings, get_settings
-from agentlens_platform.db.clickhouse import build_client, ensure_schema
+from agentlens_platform.db.clickhouse import (
+    build_client,
+    drop_row_policies,
+    ensure_reader,
+    ensure_schema,
+)
 from agentlens_platform.db.models import ApiKey, Tenant
 from agentlens_platform.db.postgres import build_engine, dispose_engine, session_scope
 from agentlens_platform.ingest.writer import SpanWriter
@@ -75,14 +80,33 @@ def ch_client(settings: Settings, clickhouse_database: str) -> Iterator[object]:
     admin.command(f"CREATE DATABASE IF NOT EXISTS {clickhouse_database}")
     client = build_client(settings, database=clickhouse_database)
     ensure_schema(client, clickhouse_database, settings.span_retention_days)
+    ensure_reader(
+        client,
+        clickhouse_database,
+        reader_user=settings.clickhouse_reader_user,
+        reader_password=settings.clickhouse_reader_secret,
+        admin_user=settings.clickhouse_user,
+    )
     try:
         yield client
     finally:
         try:
+            # Policies outlive a dropped table in ClickHouse's access storage.
+            drop_row_policies(admin, clickhouse_database)
             admin.command(f"DROP DATABASE IF EXISTS {clickhouse_database}")
         finally:
             client.close()
             admin.close()
+
+
+@pytest.fixture(scope="session")
+def ch_reader(settings: Settings, clickhouse_database: str, ch_client) -> Iterator[object]:
+    """The tenant-restricted reader the API uses, on the scratch database."""
+    client = build_client(settings, database=clickhouse_database, reader=True)
+    try:
+        yield client
+    finally:
+        client.close()
 
 
 @pytest_asyncio.fixture(scope="function")
